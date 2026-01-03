@@ -1,0 +1,51 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+.uv/
+
+# Environment files
+.env
+.env.*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# Development files
+.pre-commit-config.yaml
+.github/
+justfile
+
+# Documentation and demo (not needed in production)
+docs/
+demo/
+notebooks/
+*.md
+
+# Tests (not needed in production image)
+tests/
+
+# Claude/AI
+.claude/

@@ -4,6 +4,27 @@
 
 See `requirements.xml` for full project requirements and specifications.
 
+## Job Context
+
+This project is a demo for: **Working Student - Provisioning of de-identification services** at SAP EDT Data Protection team (Ratingen, Germany).
+
+**What the role does:**
+- Provision cloud services for PII identification and removal
+- Handle structured and unstructured data
+- Ensure security, scalability, performance, availability
+
+**Skills to demonstrate:**
+- Python + Cloud Development
+- Databricks (high priority)
+- Data pre-processing, ML/LLMs
+- German/EU data protection (GDPR)
+
+**What this demo should showcase:**
+- PII detection and de-identification (core job function)
+- German-specific patterns: IBAN, Personalausweis, German phone formats
+- Production-ready: Docker, FastAPI, tests
+- Databricks/PySpark integration for scalability
+
 ## Project Structure
 
 ```

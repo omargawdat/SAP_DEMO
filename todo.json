@@ -44,14 +44,7 @@
           "task": "Dockerfile",
           "description": "Design container build - consider image size and security",
           "files": ["Dockerfile", ".dockerignore"],
-          "done": false
-        },
-        {
-          "id": "compose",
-          "task": "Docker Compose",
-          "description": "Design local development environment with all dependencies",
-          "files": ["docker-compose.yml"],
-          "done": false
+          "done": true
         }
       ]
     },
