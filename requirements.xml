@@ -46,6 +46,8 @@
     <file>pyproject.toml</file>
     <file>justfile</file>
     <file>Dockerfile</file>
+    <file>Dockerfile.ui</file>
+    <file>docker-compose.yml</file>
   </structure>
 
   <architecture>

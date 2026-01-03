@@ -66,6 +66,22 @@ docker-build:
 docker-run:
     docker run -p 8000:8000 pii-shield
 
+# Build all Docker Compose services
+compose-build:
+    docker compose build
+
+# Start all services (API + UI)
+compose-up:
+    docker compose up
+
+# Start all services in detached mode
+compose-up-d:
+    docker compose up -d
+
+# Stop all services
+compose-down:
+    docker compose down
+
 # Clean build artifacts
 clean:
     rm -rf .pytest_cache .ruff_cache .coverage htmlcov dist build *.egg-info

@@ -296,6 +296,20 @@
           "description": "Design CI pipeline - what checks should run on every PR?",
           "files": [".github/workflows/ci.yml"],
           "done": false
+        },
+        {
+          "id": "compose",
+          "task": "Docker Compose",
+          "description": "Multi-container setup with separate images for API and UI (microservices pattern)",
+          "files": ["docker-compose.yml", "Dockerfile.ui"],
+          "done": true
+        },
+        {
+          "id": "k8s",
+          "task": "Kubernetes (Future)",
+          "description": "Consider Kubernetes or cloud services (AWS ECS, GCP Cloud Run) for production orchestration",
+          "files": ["k8s/"],
+          "done": false
         }
       ]
     },
