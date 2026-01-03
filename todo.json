@@ -5,38 +5,38 @@
       "name": "Project Setup",
       "tasks": [
         {
+          "id": "gitignore",
+          "task": "Configure .gitignore",
+          "description": "Analyze the tech stack in requirements.xml and determine what artifacts should be ignored",
+          "files": [".gitignore"],
+          "done": false
+        },
+        {
+          "id": "structure",
+          "task": "Create folder structure",
+          "description": "Design folder layout based on the architecture in requirements.xml",
+          "files": ["src/__init__.py", "tests/__init__.py"],
+          "done": false
+        },
+        {
           "id": "pyproject",
           "task": "Configure pyproject.toml",
-          "description": "Package config with dependencies and tool settings",
+          "description": "Review requirements.xml tech stack and configure appropriate dependencies and tool settings",
           "files": ["pyproject.toml"],
           "done": false
         },
         {
           "id": "precommit",
           "task": "Setup pre-commit hooks",
-          "description": "Black, ruff, mypy for code quality",
+          "description": "Determine which code quality checks are appropriate for this project",
           "files": [".pre-commit-config.yaml"],
           "done": false
         },
         {
           "id": "justfile",
           "task": "Create justfile",
-          "description": "Commands: lint, format, test, run, docker",
+          "description": "Identify common development workflows and create commands for them",
           "files": ["justfile"],
-          "done": false
-        },
-        {
-          "id": "structure",
-          "task": "Create folder structure",
-          "description": "src/, tests/ with __init__.py files",
-          "files": ["src/__init__.py", "tests/__init__.py"],
-          "done": false
-        },
-        {
-          "id": "gitignore",
-          "task": "Configure .gitignore",
-          "description": "Python, venv, IDE, cache ignores",
-          "files": [".gitignore"],
           "done": false
         }
       ]
@@ -48,49 +48,49 @@
         {
           "id": "base",
           "task": "Detector base class",
-          "description": "Abstract base with detect() returning PIIMatch list",
+          "description": "Design the detector interface - what data represents a PII match? What methods do all detectors need?",
           "files": ["src/detectors/__init__.py", "src/detectors/base.py"],
           "done": false
         },
         {
           "id": "email",
           "task": "Email detector",
-          "description": "RFC-compliant email regex",
+          "description": "Research email format standards and common edge cases to handle",
           "files": ["src/detectors/email.py", "tests/detectors/test_email.py"],
           "done": false
         },
         {
           "id": "phone",
           "task": "Phone detector",
-          "description": "German phone formats (+49, 0xxx)",
+          "description": "Research German phone number formats - what variations exist?",
           "files": ["src/detectors/phone.py", "tests/detectors/test_phone.py"],
           "done": false
         },
         {
           "id": "iban",
           "task": "IBAN detector",
-          "description": "German IBAN with checksum validation",
+          "description": "Research IBAN structure and validation algorithm for German accounts",
           "files": ["src/detectors/iban.py", "tests/detectors/test_iban.py"],
           "done": false
         },
         {
           "id": "german_id",
           "task": "Personalausweis detector",
-          "description": "German ID card number format",
+          "description": "Research German ID card (Personalausweis) number format and validation rules",
           "files": ["src/detectors/german_id.py", "tests/detectors/test_german_id.py"],
           "done": false
         },
         {
           "id": "credit_card",
           "task": "Credit card detector",
-          "description": "Card numbers with Luhn validation",
+          "description": "Research credit card number formats and Luhn algorithm for validation",
           "files": ["src/detectors/credit_card.py", "tests/detectors/test_credit_card.py"],
           "done": false
         },
         {
           "id": "ip",
           "task": "IP address detector",
-          "description": "IPv4 and IPv6 addresses",
+          "description": "Research IPv4 and IPv6 formats - what edge cases exist?",
           "files": ["src/detectors/ip.py", "tests/detectors/test_ip.py"],
           "done": false
         }
@@ -103,28 +103,28 @@
         {
           "id": "strategy_base",
           "task": "Strategy base class",
-          "description": "Abstract base with apply() method",
+          "description": "Design the strategy interface - how should strategies transform detected PII?",
           "files": ["src/strategies/__init__.py", "src/strategies/base.py"],
           "done": false
         },
         {
           "id": "redaction",
           "task": "Redaction strategy",
-          "description": "Replace with [REDACTED] or [PII_TYPE]",
+          "description": "How should redaction work? What replacement text is most useful?",
           "files": ["src/strategies/redaction.py", "tests/strategies/test_redaction.py"],
           "done": false
         },
         {
           "id": "masking",
           "task": "Masking strategy",
-          "description": "Partial mask like ****1234",
+          "description": "How much should be masked vs revealed? Consider different PII types",
           "files": ["src/strategies/masking.py", "tests/strategies/test_masking.py"],
           "done": false
         },
         {
           "id": "hashing",
           "task": "Hashing strategy",
-          "description": "SHA-256 pseudonymization",
+          "description": "Research pseudonymization - what makes a hash reversible vs irreversible for GDPR?",
           "files": ["src/strategies/hashing.py", "tests/strategies/test_hashing.py"],
           "done": false
         }
@@ -137,35 +137,35 @@
         {
           "id": "processor",
           "task": "Base processor",
-          "description": "Abstract processor interface",
+          "description": "Design the processor interface - how do detectors and strategies work together?",
           "files": ["src/pipeline/__init__.py", "src/pipeline/processor.py"],
           "done": false
         },
         {
           "id": "csv",
           "task": "CSV processor",
-          "description": "Process CSV files with streaming",
+          "description": "How to process CSV efficiently? Consider large files and memory",
           "files": ["src/pipeline/csv_processor.py", "tests/pipeline/test_csv.py"],
           "done": false
         },
         {
           "id": "json",
           "task": "JSON processor",
-          "description": "Process JSON with nested structure",
+          "description": "How to handle nested JSON structures? Preserve structure while processing",
           "files": ["src/pipeline/json_processor.py", "tests/pipeline/test_json.py"],
           "done": false
         },
         {
           "id": "text",
           "task": "Text processor",
-          "description": "Process plain text files",
+          "description": "How to process plain text while maintaining character positions?",
           "files": ["src/pipeline/text_processor.py", "tests/pipeline/test_text.py"],
           "done": false
         },
         {
           "id": "report",
           "task": "Detection report",
-          "description": "Generate detection summary report",
+          "description": "What information is useful in a detection report? Consider audit needs",
           "files": ["src/pipeline/report.py", "tests/pipeline/test_report.py"],
           "done": false
         }
@@ -178,28 +178,28 @@
         {
           "id": "ner",
           "task": "spaCy NER detector",
-          "description": "German model de_core_news_lg",
+          "description": "Research spaCy German models - which entities map to PII types?",
           "files": ["src/detectors/ner.py", "tests/detectors/test_ner.py"],
           "done": false
         },
         {
           "id": "llm_client",
           "task": "LLM client",
-          "description": "OpenAI and Ollama support with retry",
+          "description": "Design Anthropic client with proper error handling and retry logic",
           "files": ["src/detectors/llm_client.py"],
           "done": false
         },
         {
           "id": "llm_detector",
           "task": "LLM detector",
-          "description": "Context-aware PII detection with prompts",
+          "description": "Design prompts for context-aware PII detection - what makes LLM better than regex?",
           "files": ["src/detectors/llm.py", "src/detectors/prompts.py", "tests/detectors/test_llm.py"],
           "done": false
         },
         {
           "id": "ensemble",
           "task": "Ensemble detector",
-          "description": "Combine rules, NER, LLM with voting",
+          "description": "How should multiple detectors vote? Handle conflicts and overlapping matches",
           "files": ["src/detectors/ensemble.py", "tests/detectors/test_ensemble.py"],
           "done": false
         }
@@ -212,28 +212,28 @@
         {
           "id": "models",
           "task": "Pydantic models",
-          "description": "Request/response models with validation",
+          "description": "Design API request/response models - what does the client need?",
           "files": ["src/api/__init__.py", "src/api/models.py"],
           "done": false
         },
         {
           "id": "routes",
           "task": "API routes",
-          "description": "POST /detect, /deidentify endpoints",
+          "description": "Design REST endpoints - what operations does the API expose?",
           "files": ["src/api/routes.py", "tests/api/test_routes.py"],
           "done": false
         },
         {
           "id": "middleware",
           "task": "Middleware",
-          "description": "Logging, correlation IDs, metrics",
+          "description": "What cross-cutting concerns need middleware? Consider observability",
           "files": ["src/api/middleware.py"],
           "done": false
         },
         {
           "id": "main",
           "task": "FastAPI app",
-          "description": "App entry with health check",
+          "description": "Wire together routes, middleware, and app configuration",
           "files": ["src/api/main.py"],
           "done": false
         }
@@ -246,21 +246,21 @@
         {
           "id": "dockerfile",
           "task": "Dockerfile",
-          "description": "Multi-stage build with slim base",
+          "description": "Design container build - consider image size and security",
           "files": ["Dockerfile", ".dockerignore"],
           "done": false
         },
         {
           "id": "compose",
           "task": "Docker Compose",
-          "description": "Local dev environment",
+          "description": "Design local development environment with all dependencies",
           "files": ["docker-compose.yml"],
           "done": false
         },
         {
           "id": "ci",
           "task": "GitHub Actions",
-          "description": "CI pipeline: lint, test, build",
+          "description": "Design CI pipeline - what checks should run on every PR?",
           "files": [".github/workflows/ci.yml"],
           "done": false
         }
@@ -273,21 +273,28 @@
         {
           "id": "streamlit",
           "task": "Streamlit demo",
-          "description": "Interactive UI with before/after",
+          "description": "Design interactive demo - what showcases the project best?",
           "files": ["demo/app.py"],
           "done": false
         },
         {
           "id": "databricks",
           "task": "Databricks notebook",
-          "description": "PySpark UDFs with Delta Lake",
+          "description": "Design PySpark integration - how to scale PII detection?",
           "files": ["notebooks/pii_spark.py"],
+          "done": false
+        },
+        {
+          "id": "diagrams",
+          "task": "System diagrams",
+          "description": "What diagrams help explain the architecture? Consider interview presentation",
+          "files": ["docs/architecture.md"],
           "done": false
         },
         {
           "id": "readme",
           "task": "README",
-          "description": "Quick start and architecture diagram",
+          "description": "What does a new user need to get started in under 5 minutes?",
           "files": ["README.md"],
           "done": false
         }
