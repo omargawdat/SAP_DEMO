@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="PII Shield">
+  <overview>
+    <tagline>Intelligent De-identification Service</tagline>
+    <goal>Demonstrate mastery of SAP EDT Data Protection team skills</goal>
+  </overview>
+
+  <target-position>
+    <role>Working Student - Provisioning of de-identification services</role>
+    <team>EDT Data Protection, Corporate Processes &amp; IT</team>
+    <company>SAP, Ratingen, Germany</company>
+  </target-position>
+
+  <hiring-requirements>
+    <skill>Python + Cloud + ML/LLM skills</skill>
+    <skill>Understanding of PII and data protection</skill>
+    <skill>German/EU-specific knowledge (GDPR, German ID formats)</skill>
+    <skill>Production mindset</skill>
+    <skill priority="high">Databricks experience</skill>
+  </hiring-requirements>
+
+  <technology-stack>
+    <category name="Core">Python 3.13+, pytest, pre-commit, just</category>
+    <category name="ML">spaCy, transformers</category>
+    <category name="LLM">openai, ollama</category>
+    <category name="API">FastAPI, Pydantic</category>
+    <category name="Deployment">Docker, GitHub Actions</category>
+    <category name="Databricks">Community Edition, PySpark, Delta Lake</category>
+    <category name="Demo">Streamlit</category>
+  </technology-stack>
+
+  <structure>
+    <directory name="src">
+      <directory name="detectors" purpose="PII detection (rules, NER, LLM)"/>
+      <directory name="strategies" purpose="De-identification methods"/>
+      <directory name="pipeline" purpose="Data processing"/>
+      <directory name="api" purpose="FastAPI service"/>
+    </directory>
+    <directory name="tests"/>
+    <directory name="notebooks" purpose="Databricks notebooks"/>
+    <directory name="docs"/>
+    <file>pyproject.toml</file>
+    <file>justfile</file>
+    <file>Dockerfile</file>
+    <file>docker-compose.yml</file>
+  </structure>
+
+  <architecture>
+    <component name="Input">CSV/JSON Data, API Request</component>
+    <component name="Detection Engine">Rule Detectors, NER Model, LLM, Ensemble</component>
+    <component name="De-identification Engine">Applies strategies to detected PII</component>
+    <component name="Output">Clean Data, Detection Report</component>
+    <flow>Input -> Detection Engine -> De-identification Engine -> Output</flow>
+  </architecture>
+
+  <api-flow>
+    <step>Client sends POST /detect</step>
+    <step>API calls Ensemble.detect(text)</step>
+    <step>Ensemble queries Rules, NER, LLM in parallel</step>
+    <step>Ensemble returns PIIResult[]</step>
+    <step>API returns JSON Response</step>
+  </api-flow>
+
+  <interview-points>
+    <point topic="Why you built this">Wanted to understand real PII detection challenges</point>
+    <point topic="Technical depth">Implemented three approaches with clear trade-offs</point>
+    <point topic="German focus">Included German PII patterns (IBAN, Personalausweis)</point>
+    <point topic="Production mindset">Made it deployable with Docker and API</point>
+  </interview-points>
+
+  <differentiators>
+    <item>Mirrors SAP's actual work - De-identification services for PII</item>
+    <item>Uses their stack - Python, Databricks, Cloud</item>
+    <item>German-specific - IBAN, Personalausweis, German phone formats</item>
+    <item>Production-ready - Docker, API, monitoring, tests</item>
+    <item>Modern approaches - LLM for context-aware detection</item>
+  </differentiators>
+</project>

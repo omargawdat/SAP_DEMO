@@ -1,0 +1,297 @@
+{
+  "milestones": [
+    {
+      "id": "setup",
+      "name": "Project Setup",
+      "tasks": [
+        {
+          "id": "pyproject",
+          "task": "Configure pyproject.toml",
+          "description": "Package config with dependencies and tool settings",
+          "files": ["pyproject.toml"],
+          "done": false
+        },
+        {
+          "id": "precommit",
+          "task": "Setup pre-commit hooks",
+          "description": "Black, ruff, mypy for code quality",
+          "files": [".pre-commit-config.yaml"],
+          "done": false
+        },
+        {
+          "id": "justfile",
+          "task": "Create justfile",
+          "description": "Commands: lint, format, test, run, docker",
+          "files": ["justfile"],
+          "done": false
+        },
+        {
+          "id": "structure",
+          "task": "Create folder structure",
+          "description": "src/, tests/ with __init__.py files",
+          "files": ["src/__init__.py", "tests/__init__.py"],
+          "done": false
+        },
+        {
+          "id": "gitignore",
+          "task": "Configure .gitignore",
+          "description": "Python, venv, IDE, cache ignores",
+          "files": [".gitignore"],
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "detectors",
+      "name": "PII Detectors",
+      "tasks": [
+        {
+          "id": "base",
+          "task": "Detector base class",
+          "description": "Abstract base with detect() returning PIIMatch list",
+          "files": ["src/detectors/__init__.py", "src/detectors/base.py"],
+          "done": false
+        },
+        {
+          "id": "email",
+          "task": "Email detector",
+          "description": "RFC-compliant email regex",
+          "files": ["src/detectors/email.py", "tests/detectors/test_email.py"],
+          "done": false
+        },
+        {
+          "id": "phone",
+          "task": "Phone detector",
+          "description": "German phone formats (+49, 0xxx)",
+          "files": ["src/detectors/phone.py", "tests/detectors/test_phone.py"],
+          "done": false
+        },
+        {
+          "id": "iban",
+          "task": "IBAN detector",
+          "description": "German IBAN with checksum validation",
+          "files": ["src/detectors/iban.py", "tests/detectors/test_iban.py"],
+          "done": false
+        },
+        {
+          "id": "german_id",
+          "task": "Personalausweis detector",
+          "description": "German ID card number format",
+          "files": ["src/detectors/german_id.py", "tests/detectors/test_german_id.py"],
+          "done": false
+        },
+        {
+          "id": "credit_card",
+          "task": "Credit card detector",
+          "description": "Card numbers with Luhn validation",
+          "files": ["src/detectors/credit_card.py", "tests/detectors/test_credit_card.py"],
+          "done": false
+        },
+        {
+          "id": "ip",
+          "task": "IP address detector",
+          "description": "IPv4 and IPv6 addresses",
+          "files": ["src/detectors/ip.py", "tests/detectors/test_ip.py"],
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "strategies",
+      "name": "De-identification Strategies",
+      "tasks": [
+        {
+          "id": "strategy_base",
+          "task": "Strategy base class",
+          "description": "Abstract base with apply() method",
+          "files": ["src/strategies/__init__.py", "src/strategies/base.py"],
+          "done": false
+        },
+        {
+          "id": "redaction",
+          "task": "Redaction strategy",
+          "description": "Replace with [REDACTED] or [PII_TYPE]",
+          "files": ["src/strategies/redaction.py", "tests/strategies/test_redaction.py"],
+          "done": false
+        },
+        {
+          "id": "masking",
+          "task": "Masking strategy",
+          "description": "Partial mask like ****1234",
+          "files": ["src/strategies/masking.py", "tests/strategies/test_masking.py"],
+          "done": false
+        },
+        {
+          "id": "hashing",
+          "task": "Hashing strategy",
+          "description": "SHA-256 pseudonymization",
+          "files": ["src/strategies/hashing.py", "tests/strategies/test_hashing.py"],
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "pipeline",
+      "name": "Processing Pipeline",
+      "tasks": [
+        {
+          "id": "processor",
+          "task": "Base processor",
+          "description": "Abstract processor interface",
+          "files": ["src/pipeline/__init__.py", "src/pipeline/processor.py"],
+          "done": false
+        },
+        {
+          "id": "csv",
+          "task": "CSV processor",
+          "description": "Process CSV files with streaming",
+          "files": ["src/pipeline/csv_processor.py", "tests/pipeline/test_csv.py"],
+          "done": false
+        },
+        {
+          "id": "json",
+          "task": "JSON processor",
+          "description": "Process JSON with nested structure",
+          "files": ["src/pipeline/json_processor.py", "tests/pipeline/test_json.py"],
+          "done": false
+        },
+        {
+          "id": "text",
+          "task": "Text processor",
+          "description": "Process plain text files",
+          "files": ["src/pipeline/text_processor.py", "tests/pipeline/test_text.py"],
+          "done": false
+        },
+        {
+          "id": "report",
+          "task": "Detection report",
+          "description": "Generate detection summary report",
+          "files": ["src/pipeline/report.py", "tests/pipeline/test_report.py"],
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "ml",
+      "name": "ML Detection",
+      "tasks": [
+        {
+          "id": "ner",
+          "task": "spaCy NER detector",
+          "description": "German model de_core_news_lg",
+          "files": ["src/detectors/ner.py", "tests/detectors/test_ner.py"],
+          "done": false
+        },
+        {
+          "id": "llm_client",
+          "task": "LLM client",
+          "description": "OpenAI and Ollama support with retry",
+          "files": ["src/detectors/llm_client.py"],
+          "done": false
+        },
+        {
+          "id": "llm_detector",
+          "task": "LLM detector",
+          "description": "Context-aware PII detection with prompts",
+          "files": ["src/detectors/llm.py", "src/detectors/prompts.py", "tests/detectors/test_llm.py"],
+          "done": false
+        },
+        {
+          "id": "ensemble",
+          "task": "Ensemble detector",
+          "description": "Combine rules, NER, LLM with voting",
+          "files": ["src/detectors/ensemble.py", "tests/detectors/test_ensemble.py"],
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "api",
+      "name": "API Service",
+      "tasks": [
+        {
+          "id": "models",
+          "task": "Pydantic models",
+          "description": "Request/response models with validation",
+          "files": ["src/api/__init__.py", "src/api/models.py"],
+          "done": false
+        },
+        {
+          "id": "routes",
+          "task": "API routes",
+          "description": "POST /detect, /deidentify endpoints",
+          "files": ["src/api/routes.py", "tests/api/test_routes.py"],
+          "done": false
+        },
+        {
+          "id": "middleware",
+          "task": "Middleware",
+          "description": "Logging, correlation IDs, metrics",
+          "files": ["src/api/middleware.py"],
+          "done": false
+        },
+        {
+          "id": "main",
+          "task": "FastAPI app",
+          "description": "App entry with health check",
+          "files": ["src/api/main.py"],
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "deploy",
+      "name": "Deployment",
+      "tasks": [
+        {
+          "id": "dockerfile",
+          "task": "Dockerfile",
+          "description": "Multi-stage build with slim base",
+          "files": ["Dockerfile", ".dockerignore"],
+          "done": false
+        },
+        {
+          "id": "compose",
+          "task": "Docker Compose",
+          "description": "Local dev environment",
+          "files": ["docker-compose.yml"],
+          "done": false
+        },
+        {
+          "id": "ci",
+          "task": "GitHub Actions",
+          "description": "CI pipeline: lint, test, build",
+          "files": [".github/workflows/ci.yml"],
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "demo",
+      "name": "Demo & Docs",
+      "tasks": [
+        {
+          "id": "streamlit",
+          "task": "Streamlit demo",
+          "description": "Interactive UI with before/after",
+          "files": ["demo/app.py"],
+          "done": false
+        },
+        {
+          "id": "databricks",
+          "task": "Databricks notebook",
+          "description": "PySpark UDFs with Delta Lake",
+          "files": ["notebooks/pii_spark.py"],
+          "done": false
+        },
+        {
+          "id": "readme",
+          "task": "README",
+          "description": "Quick start and architecture diagram",
+          "files": ["README.md"],
+          "done": false
+        }
+      ]
+    }
+  ]
+}
