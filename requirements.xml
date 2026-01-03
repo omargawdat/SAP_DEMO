@@ -21,8 +21,7 @@
 
   <technology-stack>
     <category name="Core">Python 3.13+, pytest, pre-commit, just</category>
-    <category name="ML">spaCy, transformers</category>
-    <category name="LLM">anthropic</category>
+    <category name="ML">presidio-analyzer, presidio-anonymizer, spaCy</category>
     <category name="API">FastAPI, Pydantic</category>
     <category name="Deployment">Docker, GitHub Actions</category>
     <category name="Databricks">Community Edition, PySpark, Delta Lake</category>

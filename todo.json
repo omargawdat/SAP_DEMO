@@ -173,33 +173,26 @@
     },
     {
       "id": "ml",
-      "name": "ML Detection",
+      "name": "ML Detection (Presidio)",
       "tasks": [
         {
-          "id": "ner",
-          "task": "spaCy NER detector",
-          "description": "Research spaCy German models - which entities map to PII types?",
-          "files": ["src/detectors/ner.py", "tests/detectors/test_ner.py"],
+          "id": "presidio_detector",
+          "task": "Presidio detector",
+          "description": "Integrate Microsoft Presidio for NER-based PII detection with German language support",
+          "files": ["src/detectors/presidio_detector.py", "tests/detectors/test_presidio.py"],
           "done": false
         },
         {
-          "id": "llm_client",
-          "task": "LLM client",
-          "description": "Design Anthropic client with proper error handling and retry logic",
-          "files": ["src/detectors/llm_client.py"],
-          "done": false
-        },
-        {
-          "id": "llm_detector",
-          "task": "LLM detector",
-          "description": "Design prompts for context-aware PII detection - what makes LLM better than regex?",
-          "files": ["src/detectors/llm.py", "src/detectors/prompts.py", "tests/detectors/test_llm.py"],
+          "id": "german_recognizers",
+          "task": "German custom recognizers",
+          "description": "Create custom Presidio recognizers for German-specific PII: enhanced IBAN, Personalausweis patterns",
+          "files": ["src/detectors/german_recognizers.py", "tests/detectors/test_german_recognizers.py"],
           "done": false
         },
         {
           "id": "ensemble",
           "task": "Ensemble detector",
-          "description": "How should multiple detectors vote? Handle conflicts and overlapping matches",
+          "description": "Combine rule-based detectors with Presidio NER - handle conflicts and overlapping matches",
           "files": ["src/detectors/ensemble.py", "tests/detectors/test_ensemble.py"],
           "done": false
         }
