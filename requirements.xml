@@ -34,6 +34,7 @@
         <directory name="core" purpose="Shared types: PIIType, PIIMatch, DetectionResult"/>
         <directory name="detectors" purpose="PII detection (rules, NER, ensemble)"/>
         <directory name="strategies" purpose="De-identification methods"/>
+        <directory name="preprocessing" purpose="Text normalization, encoding, language detection"/>
         <directory name="pipeline" purpose="Data processing"/>
         <directory name="api" purpose="FastAPI service"/>
       </directory>
@@ -50,10 +51,11 @@
 
   <architecture>
     <component name="Input">CSV/JSON Data, API Request</component>
+    <component name="Preprocessing">Text normalization, encoding handling, language detection, chunking</component>
     <component name="Detection Engine">Rule Detectors, NER Model, LLM, Ensemble</component>
     <component name="De-identification Engine">Applies strategies to detected PII</component>
     <component name="Output">Clean Data, Detection Report</component>
-    <flow>Input -> Detection Engine -> De-identification Engine -> Output</flow>
+    <flow>Input -> Preprocessing -> Detection Engine -> De-identification Engine -> Output</flow>
   </architecture>
 
   <api-flow>

@@ -23,20 +23,34 @@
           "task": "Configure pyproject.toml",
           "description": "Review requirements.xml tech stack and configure appropriate dependencies and tool settings",
           "files": ["pyproject.toml"],
-          "done": false
+          "done": true
         },
         {
           "id": "precommit",
           "task": "Setup pre-commit hooks",
           "description": "Determine which code quality checks are appropriate for this project",
           "files": [".pre-commit-config.yaml"],
-          "done": false
+          "done": true
         },
         {
           "id": "justfile",
           "task": "Create justfile",
           "description": "Identify common development workflows and create commands for them",
           "files": ["justfile"],
+          "done": true
+        },
+        {
+          "id": "dockerfile",
+          "task": "Dockerfile",
+          "description": "Design container build - consider image size and security",
+          "files": ["Dockerfile", ".dockerignore"],
+          "done": false
+        },
+        {
+          "id": "compose",
+          "task": "Docker Compose",
+          "description": "Design local development environment with all dependencies",
+          "files": ["docker-compose.yml"],
           "done": false
         }
       ]
@@ -50,6 +64,40 @@
           "task": "Core types and models",
           "description": "Define PIIType enum, PIIMatch dataclass, and DetectionResult - shared across all modules",
           "files": ["src/pii_shield/core/__init__.py", "src/pii_shield/core/types.py", "src/pii_shield/core/models.py"],
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "preprocessing",
+      "name": "Data Preprocessing",
+      "tasks": [
+        {
+          "id": "preprocess_base",
+          "task": "Preprocessor base class",
+          "description": "Design the preprocessor interface - what transformations are needed before PII detection?",
+          "files": ["src/pii_shield/preprocessing/__init__.py", "src/pii_shield/preprocessing/base.py"],
+          "done": false
+        },
+        {
+          "id": "normalizer",
+          "task": "Text normalizer",
+          "description": "Normalize whitespace, line breaks, and Unicode characters for consistent detection",
+          "files": ["src/pii_shield/preprocessing/normalizer.py", "tests/preprocessing/test_normalizer.py"],
+          "done": false
+        },
+        {
+          "id": "encoding",
+          "task": "Encoding handler",
+          "description": "Handle UTF-8 and German characters (ä, ö, ü, ß) - detect and convert encodings",
+          "files": ["src/pii_shield/preprocessing/encoding.py", "tests/preprocessing/test_encoding.py"],
+          "done": false
+        },
+        {
+          "id": "chunker",
+          "task": "Text chunker",
+          "description": "Split large documents into processable chunks while preserving context",
+          "files": ["src/pii_shield/preprocessing/chunker.py", "tests/preprocessing/test_chunker.py"],
           "done": false
         }
       ]
@@ -249,20 +297,6 @@
       "id": "deploy",
       "name": "Deployment",
       "tasks": [
-        {
-          "id": "dockerfile",
-          "task": "Dockerfile",
-          "description": "Design container build - consider image size and security",
-          "files": ["Dockerfile", ".dockerignore"],
-          "done": false
-        },
-        {
-          "id": "compose",
-          "task": "Docker Compose",
-          "description": "Design local development environment with all dependencies",
-          "files": ["docker-compose.yml"],
-          "done": false
-        },
         {
           "id": "ci",
           "task": "GitHub Actions",
