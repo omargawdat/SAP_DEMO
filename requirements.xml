@@ -30,12 +30,16 @@
 
   <structure>
     <directory name="src">
-      <directory name="detectors" purpose="PII detection (rules, NER, LLM)"/>
-      <directory name="strategies" purpose="De-identification methods"/>
-      <directory name="pipeline" purpose="Data processing"/>
-      <directory name="api" purpose="FastAPI service"/>
+      <directory name="pii_shield" purpose="Main package (PEP 517 src layout)">
+        <directory name="core" purpose="Shared types: PIIType, PIIMatch, DetectionResult"/>
+        <directory name="detectors" purpose="PII detection (rules, NER, ensemble)"/>
+        <directory name="strategies" purpose="De-identification methods"/>
+        <directory name="pipeline" purpose="Data processing"/>
+        <directory name="api" purpose="FastAPI service"/>
+      </directory>
     </directory>
-    <directory name="tests"/>
+    <directory name="tests" purpose="Mirrors src structure"/>
+    <directory name="demo" purpose="Streamlit demo"/>
     <directory name="notebooks" purpose="Databricks notebooks"/>
     <directory name="docs"/>
     <file>pyproject.toml</file>

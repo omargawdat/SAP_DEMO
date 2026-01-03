@@ -15,8 +15,8 @@
           "id": "structure",
           "task": "Create folder structure",
           "description": "Design folder layout based on the architecture in requirements.xml",
-          "files": ["src/__init__.py", "tests/__init__.py"],
-          "done": false
+          "files": ["src/pii_shield/__init__.py", "tests/__init__.py"],
+          "done": true
         },
         {
           "id": "pyproject",
@@ -42,6 +42,19 @@
       ]
     },
     {
+      "id": "core",
+      "name": "Core Domain Types",
+      "tasks": [
+        {
+          "id": "types",
+          "task": "Core types and models",
+          "description": "Define PIIType enum, PIIMatch dataclass, and DetectionResult - shared across all modules",
+          "files": ["src/pii_shield/core/__init__.py", "src/pii_shield/core/types.py", "src/pii_shield/core/models.py"],
+          "done": false
+        }
+      ]
+    },
+    {
       "id": "detectors",
       "name": "PII Detectors",
       "tasks": [
@@ -49,49 +62,49 @@
           "id": "base",
           "task": "Detector base class",
           "description": "Design the detector interface - what data represents a PII match? What methods do all detectors need?",
-          "files": ["src/detectors/__init__.py", "src/detectors/base.py"],
+          "files": ["src/pii_shield/detectors/__init__.py", "src/pii_shield/detectors/base.py"],
           "done": false
         },
         {
           "id": "email",
           "task": "Email detector",
           "description": "Research email format standards and common edge cases to handle",
-          "files": ["src/detectors/email.py", "tests/detectors/test_email.py"],
+          "files": ["src/pii_shield/detectors/email.py", "tests/detectors/test_email.py"],
           "done": false
         },
         {
           "id": "phone",
           "task": "Phone detector",
           "description": "Research German phone number formats - what variations exist?",
-          "files": ["src/detectors/phone.py", "tests/detectors/test_phone.py"],
+          "files": ["src/pii_shield/detectors/phone.py", "tests/detectors/test_phone.py"],
           "done": false
         },
         {
           "id": "iban",
           "task": "IBAN detector",
           "description": "Research IBAN structure and validation algorithm for German accounts",
-          "files": ["src/detectors/iban.py", "tests/detectors/test_iban.py"],
+          "files": ["src/pii_shield/detectors/iban.py", "tests/detectors/test_iban.py"],
           "done": false
         },
         {
           "id": "german_id",
           "task": "Personalausweis detector",
           "description": "Research German ID card (Personalausweis) number format and validation rules",
-          "files": ["src/detectors/german_id.py", "tests/detectors/test_german_id.py"],
+          "files": ["src/pii_shield/detectors/german_id.py", "tests/detectors/test_german_id.py"],
           "done": false
         },
         {
           "id": "credit_card",
           "task": "Credit card detector",
           "description": "Research credit card number formats and Luhn algorithm for validation",
-          "files": ["src/detectors/credit_card.py", "tests/detectors/test_credit_card.py"],
+          "files": ["src/pii_shield/detectors/credit_card.py", "tests/detectors/test_credit_card.py"],
           "done": false
         },
         {
           "id": "ip",
           "task": "IP address detector",
           "description": "Research IPv4 and IPv6 formats - what edge cases exist?",
-          "files": ["src/detectors/ip.py", "tests/detectors/test_ip.py"],
+          "files": ["src/pii_shield/detectors/ip.py", "tests/detectors/test_ip.py"],
           "done": false
         }
       ]
@@ -104,28 +117,28 @@
           "id": "strategy_base",
           "task": "Strategy base class",
           "description": "Design the strategy interface - how should strategies transform detected PII?",
-          "files": ["src/strategies/__init__.py", "src/strategies/base.py"],
+          "files": ["src/pii_shield/strategies/__init__.py", "src/pii_shield/strategies/base.py"],
           "done": false
         },
         {
           "id": "redaction",
           "task": "Redaction strategy",
           "description": "How should redaction work? What replacement text is most useful?",
-          "files": ["src/strategies/redaction.py", "tests/strategies/test_redaction.py"],
+          "files": ["src/pii_shield/strategies/redaction.py", "tests/strategies/test_redaction.py"],
           "done": false
         },
         {
           "id": "masking",
           "task": "Masking strategy",
           "description": "How much should be masked vs revealed? Consider different PII types",
-          "files": ["src/strategies/masking.py", "tests/strategies/test_masking.py"],
+          "files": ["src/pii_shield/strategies/masking.py", "tests/strategies/test_masking.py"],
           "done": false
         },
         {
           "id": "hashing",
           "task": "Hashing strategy",
           "description": "Research pseudonymization - what makes a hash reversible vs irreversible for GDPR?",
-          "files": ["src/strategies/hashing.py", "tests/strategies/test_hashing.py"],
+          "files": ["src/pii_shield/strategies/hashing.py", "tests/strategies/test_hashing.py"],
           "done": false
         }
       ]
@@ -138,35 +151,35 @@
           "id": "processor",
           "task": "Base processor",
           "description": "Design the processor interface - how do detectors and strategies work together?",
-          "files": ["src/pipeline/__init__.py", "src/pipeline/processor.py"],
+          "files": ["src/pii_shield/pipeline/__init__.py", "src/pii_shield/pipeline/processor.py"],
           "done": false
         },
         {
           "id": "csv",
           "task": "CSV processor",
           "description": "How to process CSV efficiently? Consider large files and memory",
-          "files": ["src/pipeline/csv_processor.py", "tests/pipeline/test_csv.py"],
+          "files": ["src/pii_shield/pipeline/csv_processor.py", "tests/pipeline/test_csv.py"],
           "done": false
         },
         {
           "id": "json",
           "task": "JSON processor",
           "description": "How to handle nested JSON structures? Preserve structure while processing",
-          "files": ["src/pipeline/json_processor.py", "tests/pipeline/test_json.py"],
+          "files": ["src/pii_shield/pipeline/json_processor.py", "tests/pipeline/test_json.py"],
           "done": false
         },
         {
           "id": "text",
           "task": "Text processor",
           "description": "How to process plain text while maintaining character positions?",
-          "files": ["src/pipeline/text_processor.py", "tests/pipeline/test_text.py"],
+          "files": ["src/pii_shield/pipeline/text_processor.py", "tests/pipeline/test_text.py"],
           "done": false
         },
         {
           "id": "report",
           "task": "Detection report",
           "description": "What information is useful in a detection report? Consider audit needs",
-          "files": ["src/pipeline/report.py", "tests/pipeline/test_report.py"],
+          "files": ["src/pii_shield/pipeline/report.py", "tests/pipeline/test_report.py"],
           "done": false
         }
       ]
@@ -179,21 +192,21 @@
           "id": "presidio_detector",
           "task": "Presidio detector",
           "description": "Integrate Microsoft Presidio for NER-based PII detection with German language support",
-          "files": ["src/detectors/presidio_detector.py", "tests/detectors/test_presidio.py"],
+          "files": ["src/pii_shield/detectors/presidio.py", "tests/detectors/test_presidio.py"],
           "done": false
         },
         {
           "id": "german_recognizers",
           "task": "German custom recognizers",
           "description": "Create custom Presidio recognizers for German-specific PII: enhanced IBAN, Personalausweis patterns",
-          "files": ["src/detectors/german_recognizers.py", "tests/detectors/test_german_recognizers.py"],
+          "files": ["src/pii_shield/detectors/german_recognizers.py", "tests/detectors/test_german_recognizers.py"],
           "done": false
         },
         {
           "id": "ensemble",
           "task": "Ensemble detector",
           "description": "Combine rule-based detectors with Presidio NER - handle conflicts and overlapping matches",
-          "files": ["src/detectors/ensemble.py", "tests/detectors/test_ensemble.py"],
+          "files": ["src/pii_shield/detectors/ensemble.py", "tests/detectors/test_ensemble.py"],
           "done": false
         }
       ]
@@ -206,28 +219,28 @@
           "id": "models",
           "task": "Pydantic models",
           "description": "Design API request/response models - what does the client need?",
-          "files": ["src/api/__init__.py", "src/api/models.py"],
+          "files": ["src/pii_shield/api/__init__.py", "src/pii_shield/api/models.py"],
           "done": false
         },
         {
           "id": "routes",
           "task": "API routes",
           "description": "Design REST endpoints - what operations does the API expose?",
-          "files": ["src/api/routes.py", "tests/api/test_routes.py"],
+          "files": ["src/pii_shield/api/routes.py", "tests/api/test_routes.py"],
           "done": false
         },
         {
           "id": "middleware",
           "task": "Middleware",
           "description": "What cross-cutting concerns need middleware? Consider observability",
-          "files": ["src/api/middleware.py"],
+          "files": ["src/pii_shield/api/middleware.py"],
           "done": false
         },
         {
           "id": "main",
           "task": "FastAPI app",
           "description": "Wire together routes, middleware, and app configuration",
-          "files": ["src/api/main.py"],
+          "files": ["src/pii_shield/api/main.py"],
           "done": false
         }
       ]
