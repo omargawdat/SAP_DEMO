@@ -6,7 +6,7 @@
   "tickets": [
     {
       "id": "PII-001",
-      "type": "chore",
+      "epic": "Setup",
       "title": "Configure .gitignore",
       "description": "Analyze the tech stack and determine what artifacts should be ignored",
       "status": "done",
@@ -21,7 +21,7 @@
     },
     {
       "id": "PII-002",
-      "type": "chore",
+      "epic": "Setup",
       "title": "Create folder structure",
       "description": "Design folder layout based on the architecture in requirements.xml",
       "status": "done",
@@ -35,7 +35,7 @@
     },
     {
       "id": "PII-003",
-      "type": "chore",
+      "epic": "Setup",
       "title": "Configure pyproject.toml",
       "description": "Review tech stack and configure dependencies and tool settings",
       "status": "done",
@@ -50,7 +50,7 @@
     },
     {
       "id": "PII-004",
-      "type": "chore",
+      "epic": "Setup",
       "title": "Setup pre-commit hooks",
       "description": "Configure code quality checks to run before commits",
       "status": "done",
@@ -65,7 +65,7 @@
     },
     {
       "id": "PII-005",
-      "type": "chore",
+      "epic": "Setup",
       "title": "Create justfile",
       "description": "Create command runner for common development workflows",
       "status": "done",
@@ -80,7 +80,7 @@
     },
     {
       "id": "PII-006",
-      "type": "chore",
+      "epic": "Setup",
       "title": "Create Dockerfile",
       "description": "Design production container with multi-stage build",
       "status": "done",
@@ -95,7 +95,7 @@
     },
     {
       "id": "PII-007",
-      "type": "chore",
+      "epic": "Setup",
       "title": "Setup Docker Compose",
       "description": "Multi-container setup with separate images for API and UI",
       "status": "done",
@@ -110,7 +110,7 @@
     },
     {
       "id": "PII-008",
-      "type": "feature",
+      "epic": "Core",
       "title": "Core types and models",
       "description": "Define PIIType enum, PIIMatch dataclass, and DetectionResult",
       "status": "todo",
@@ -125,7 +125,7 @@
     },
     {
       "id": "PII-009",
-      "type": "feature",
+      "epic": "Preprocessing",
       "title": "Preprocessor base class",
       "description": "Design the preprocessor interface for text transformations",
       "status": "backlog",
@@ -139,7 +139,7 @@
     },
     {
       "id": "PII-010",
-      "type": "feature",
+      "epic": "Preprocessing",
       "title": "Text normalizer",
       "description": "Normalize whitespace, line breaks, and Unicode for consistent detection",
       "status": "backlog",
@@ -154,7 +154,7 @@
     },
     {
       "id": "PII-011",
-      "type": "feature",
+      "epic": "Preprocessing",
       "title": "Encoding handler",
       "description": "Handle UTF-8 and German characters (ä, ö, ü, ß)",
       "status": "backlog",
@@ -169,7 +169,7 @@
     },
     {
       "id": "PII-012",
-      "type": "feature",
+      "epic": "Preprocessing",
       "title": "Text chunker",
       "description": "Split large documents into processable chunks",
       "status": "backlog",
@@ -184,7 +184,7 @@
     },
     {
       "id": "PII-013",
-      "type": "feature",
+      "epic": "Detectors",
       "title": "Detector base class",
       "description": "Design the detector interface for PII detection",
       "status": "backlog",
@@ -199,7 +199,7 @@
     },
     {
       "id": "PII-014",
-      "type": "feature",
+      "epic": "Detectors",
       "title": "Email detector",
       "description": "Detect email addresses with RFC 5322 compliance",
       "status": "backlog",
@@ -214,7 +214,7 @@
     },
     {
       "id": "PII-015",
-      "type": "feature",
+      "epic": "Detectors",
       "title": "Phone detector",
       "description": "Detect German phone number formats",
       "status": "backlog",
@@ -229,7 +229,7 @@
     },
     {
       "id": "PII-016",
-      "type": "feature",
+      "epic": "Detectors",
       "title": "IBAN detector",
       "description": "Detect and validate German IBAN numbers",
       "status": "backlog",
@@ -244,7 +244,7 @@
     },
     {
       "id": "PII-017",
-      "type": "spike",
+      "epic": "Detectors",
       "title": "Research Personalausweis format",
       "description": "Research German ID card number format and validation rules",
       "status": "backlog",
@@ -259,7 +259,7 @@
     },
     {
       "id": "PII-018",
-      "type": "feature",
+      "epic": "Detectors",
       "title": "Credit card detector",
       "description": "Detect credit card numbers with Luhn validation",
       "status": "backlog",
@@ -274,7 +274,7 @@
     },
     {
       "id": "PII-019",
-      "type": "feature",
+      "epic": "Detectors",
       "title": "IP address detector",
       "description": "Detect IPv4 and IPv6 addresses",
       "status": "backlog",
@@ -289,7 +289,7 @@
     },
     {
       "id": "PII-020",
-      "type": "feature",
+      "epic": "Strategies",
       "title": "Strategy base class",
       "description": "Design interface for de-identification strategies",
       "status": "backlog",
@@ -303,7 +303,7 @@
     },
     {
       "id": "PII-021",
-      "type": "feature",
+      "epic": "Strategies",
       "title": "Redaction strategy",
       "description": "Replace PII with type-specific placeholders",
       "status": "backlog",
@@ -317,7 +317,7 @@
     },
     {
       "id": "PII-022",
-      "type": "feature",
+      "epic": "Strategies",
       "title": "Masking strategy",
       "description": "Partially mask PII while preserving format",
       "status": "backlog",
@@ -332,7 +332,7 @@
     },
     {
       "id": "PII-023",
-      "type": "feature",
+      "epic": "Strategies",
       "title": "Hashing strategy",
       "description": "Pseudonymize PII with consistent hashing",
       "status": "backlog",
@@ -347,7 +347,7 @@
     },
     {
       "id": "PII-024",
-      "type": "feature",
+      "epic": "Pipeline",
       "title": "Base processor",
       "description": "Orchestrate detectors and strategies",
       "status": "backlog",
@@ -362,7 +362,7 @@
     },
     {
       "id": "PII-025",
-      "type": "feature",
+      "epic": "Pipeline",
       "title": "CSV processor",
       "description": "Process CSV files column by column",
       "status": "backlog",
@@ -377,7 +377,7 @@
     },
     {
       "id": "PII-026",
-      "type": "feature",
+      "epic": "Pipeline",
       "title": "JSON processor",
       "description": "Process nested JSON while preserving structure",
       "status": "backlog",
@@ -392,7 +392,7 @@
     },
     {
       "id": "PII-027",
-      "type": "feature",
+      "epic": "Pipeline",
       "title": "Text processor",
       "description": "Process plain text with position tracking",
       "status": "backlog",
@@ -406,7 +406,7 @@
     },
     {
       "id": "PII-028",
-      "type": "feature",
+      "epic": "Pipeline",
       "title": "Detection report",
       "description": "Generate audit report of detected PII",
       "status": "backlog",
@@ -421,7 +421,7 @@
     },
     {
       "id": "PII-029",
-      "type": "feature",
+      "epic": "ML",
       "title": "Presidio integration",
       "description": "Integrate Microsoft Presidio for NER-based detection",
       "status": "backlog",
@@ -436,7 +436,7 @@
     },
     {
       "id": "PII-030",
-      "type": "feature",
+      "epic": "ML",
       "title": "German custom recognizers",
       "description": "Custom Presidio recognizers for German-specific PII",
       "status": "backlog",
@@ -451,7 +451,7 @@
     },
     {
       "id": "PII-031",
-      "type": "feature",
+      "epic": "ML",
       "title": "Ensemble detector",
       "description": "Combine rule-based and ML detectors",
       "status": "backlog",
@@ -466,7 +466,7 @@
     },
     {
       "id": "PII-032",
-      "type": "feature",
+      "epic": "API",
       "title": "API Pydantic models",
       "description": "Design request/response models for the API",
       "status": "backlog",
@@ -481,7 +481,7 @@
     },
     {
       "id": "PII-033",
-      "type": "feature",
+      "epic": "API",
       "title": "API routes",
       "description": "Implement REST endpoints",
       "status": "backlog",
@@ -496,7 +496,7 @@
     },
     {
       "id": "PII-034",
-      "type": "feature",
+      "epic": "API",
       "title": "API middleware",
       "description": "Add logging and error handling middleware",
       "status": "backlog",
@@ -511,7 +511,7 @@
     },
     {
       "id": "PII-035",
-      "type": "feature",
+      "epic": "API",
       "title": "FastAPI application",
       "description": "Wire together routes and middleware",
       "status": "backlog",
@@ -526,7 +526,7 @@
     },
     {
       "id": "PII-036",
-      "type": "chore",
+      "epic": "DevOps",
       "title": "GitHub Actions CI",
       "description": "Setup CI pipeline for automated checks",
       "status": "backlog",
@@ -541,7 +541,7 @@
     },
     {
       "id": "PII-037",
-      "type": "chore",
+      "epic": "DevOps",
       "title": "Kubernetes manifests (Future)",
       "description": "Create K8s deployment configs for production",
       "status": "backlog",
@@ -556,7 +556,7 @@
     },
     {
       "id": "PII-038",
-      "type": "feature",
+      "epic": "Demo",
       "title": "Streamlit demo",
       "description": "Interactive demo showcasing PII detection",
       "status": "backlog",
@@ -571,7 +571,7 @@
     },
     {
       "id": "PII-039",
-      "type": "feature",
+      "epic": "Demo",
       "title": "Databricks notebook",
       "description": "PySpark integration for scalable processing",
       "status": "backlog",
@@ -586,7 +586,7 @@
     },
     {
       "id": "PII-040",
-      "type": "chore",
+      "epic": "Demo",
       "title": "Architecture diagrams",
       "description": "Create system diagrams for documentation",
       "status": "backlog",
@@ -601,7 +601,7 @@
     },
     {
       "id": "PII-041",
-      "type": "chore",
+      "epic": "Demo",
       "title": "Complete README",
       "description": "Comprehensive documentation for new users",
       "status": "backlog",
