@@ -153,36 +153,6 @@
       "files": ["src/pii_shield/preprocessing/normalizer.py", "tests/preprocessing/test_normalizer.py"]
     },
     {
-      "id": "PII-011",
-      "epic": "Preprocessing",
-      "title": "Encoding handler",
-      "description": "Handle UTF-8 and German characters (ä, ö, ü, ß)",
-      "status": "backlog",
-      "priority": "medium",
-      "story_points": 3,
-      "acceptance_criteria": [
-        "Detects file encoding",
-        "Converts to UTF-8",
-        "German umlauts preserved"
-      ],
-      "files": ["src/pii_shield/preprocessing/encoding.py", "tests/preprocessing/test_encoding.py"]
-    },
-    {
-      "id": "PII-012",
-      "epic": "Preprocessing",
-      "title": "Text chunker",
-      "description": "Split large documents into processable chunks",
-      "status": "backlog",
-      "priority": "low",
-      "story_points": 3,
-      "acceptance_criteria": [
-        "Chunks respect sentence boundaries",
-        "Overlap for context preservation",
-        "Handles large files efficiently"
-      ],
-      "files": ["src/pii_shield/preprocessing/chunker.py", "tests/preprocessing/test_chunker.py"]
-    },
-    {
       "id": "PII-013",
       "epic": "Detectors",
       "title": "Detector base class",
@@ -418,6 +388,21 @@
         "Export to JSON format"
       ],
       "files": ["src/pii_shield/pipeline/report.py", "tests/pipeline/test_report.py"]
+    },
+    {
+      "id": "PII-028a",
+      "epic": "Pipeline",
+      "title": "Manual review flagging",
+      "description": "Flag low-confidence detections for manual review instead of auto-processing",
+      "status": "backlog",
+      "priority": "medium",
+      "story_points": 3,
+      "acceptance_criteria": [
+        "Configurable confidence threshold (default 0.8)",
+        "PIIMatch includes needs_review field",
+        "Report separates confirmed vs needs-review items"
+      ],
+      "files": ["src/pii_shield/core/models.py", "src/pii_shield/pipeline/processor.py"]
     },
     {
       "id": "PII-029",
