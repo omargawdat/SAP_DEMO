@@ -9,7 +9,7 @@
           "task": "Configure .gitignore",
           "description": "Analyze the tech stack in requirements.xml and determine what artifacts should be ignored",
           "files": [".gitignore"],
-          "done": false
+          "done": true
         },
         {
           "id": "structure",
