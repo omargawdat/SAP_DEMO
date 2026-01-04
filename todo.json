@@ -322,7 +322,7 @@
       "epic": "Strategies",
       "title": "Masking strategy",
       "description": "Partially mask PII while preserving format",
-      "status": "backlog",
+      "status": "done",
       "priority": "low",
       "story_points": 3,
       "acceptance_criteria": [
@@ -337,7 +337,7 @@
       "epic": "Strategies",
       "title": "Hashing strategy",
       "description": "Pseudonymize PII with consistent hashing",
-      "status": "backlog",
+      "status": "done",
       "priority": "low",
       "story_points": 3,
       "acceptance_criteria": [

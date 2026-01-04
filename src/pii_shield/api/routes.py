@@ -27,7 +27,7 @@ from pii_shield.detectors import (
     PresidioDetector,
 )
 from pii_shield.pipeline import TextProcessor
-from pii_shield.strategies import RedactionStrategy
+from pii_shield.strategies import HashingStrategy, MaskingStrategy, RedactionStrategy
 
 router = APIRouter(prefix="/api/v1")
 
@@ -46,7 +46,9 @@ DETECTORS = [
 
 # Available strategies
 STRATEGIES = {
-    "redaction": RedactionStrategy(),
+    "redaction": RedactionStrategy(),  # [EMAIL] - complete removal
+    "hashing": HashingStrategy(),  # a3f2b1c4... - pseudonymization
+    "masking": MaskingStrategy(),  # han***com - partial visibility
 }
 
 # Default confidence threshold for review_required flag
