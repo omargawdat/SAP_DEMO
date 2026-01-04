@@ -149,7 +149,7 @@
       "epic": "Detectors",
       "title": "Detector base + Email detector",
       "description": "Design detector interface and implement email detection with RFC 5322 compliance",
-      "status": "backlog",
+      "status": "done",
       "priority": "high",
       "story_points": 5,
       "acceptance_criteria": [
@@ -169,83 +169,6 @@
     },
     {
       "id": "PII-011",
-      "epic": "Detectors",
-      "title": "Phone detector",
-      "description": "Detect German phone number formats",
-      "status": "backlog",
-      "priority": "high",
-      "story_points": 5,
-      "acceptance_criteria": [
-        "German landline formats detected",
-        "Mobile formats detected (+49, 0049, 0)",
-        "International formats supported",
-        "Unit tests pass"
-      ],
-      "files": ["src/pii_shield/detectors/phone.py", "tests/detectors/test_phone.py"]
-    },
-    {
-      "id": "PII-012",
-      "epic": "Detectors",
-      "title": "IBAN detector",
-      "description": "Detect and validate German IBAN numbers",
-      "status": "backlog",
-      "priority": "high",
-      "story_points": 5,
-      "acceptance_criteria": [
-        "German IBAN format detected (DE + 20 digits)",
-        "Checksum validation (mod 97)",
-        "Other EU IBANs supported",
-        "Unit tests pass"
-      ],
-      "files": ["src/pii_shield/detectors/iban.py", "tests/detectors/test_iban.py"]
-    },
-    {
-      "id": "PII-013",
-      "epic": "Detectors",
-      "title": "German ID (Personalausweis) detector",
-      "description": "Detect German ID card numbers with check digit validation",
-      "status": "backlog",
-      "priority": "high",
-      "story_points": 5,
-      "acceptance_criteria": [
-        "Format: 9 chars alphanumeric (e.g., L01X00T471)",
-        "Check digit algorithm implemented",
-        "Unit tests pass"
-      ],
-      "files": ["src/pii_shield/detectors/german_id.py", "tests/detectors/test_german_id.py"]
-    },
-    {
-      "id": "PII-014",
-      "epic": "Detectors",
-      "title": "Credit card detector",
-      "description": "Detect credit card numbers with Luhn validation",
-      "status": "backlog",
-      "priority": "low",
-      "story_points": 3,
-      "acceptance_criteria": [
-        "Major card types detected (Visa, MC, Amex)",
-        "Luhn checksum validation",
-        "Formatted and unformatted numbers"
-      ],
-      "files": ["src/pii_shield/detectors/credit_card.py", "tests/detectors/test_credit_card.py"]
-    },
-    {
-      "id": "PII-015",
-      "epic": "Detectors",
-      "title": "IP address detector",
-      "description": "Detect IPv4 and IPv6 addresses",
-      "status": "backlog",
-      "priority": "low",
-      "story_points": 3,
-      "acceptance_criteria": [
-        "IPv4 addresses detected",
-        "IPv6 addresses detected",
-        "Private vs public distinguished"
-      ],
-      "files": ["src/pii_shield/detectors/ip.py", "tests/detectors/test_ip.py"]
-    },
-    {
-      "id": "PII-016",
       "epic": "Strategies",
       "title": "Redaction strategy",
       "description": "Base strategy interface and redaction implementation",
@@ -266,37 +189,7 @@
       ]
     },
     {
-      "id": "PII-017",
-      "epic": "Strategies",
-      "title": "Masking strategy",
-      "description": "Partially mask PII while preserving format",
-      "status": "backlog",
-      "priority": "low",
-      "story_points": 3,
-      "acceptance_criteria": [
-        "Email: j***@example.com",
-        "Phone: +49 *** *** 1234",
-        "Configurable mask character"
-      ],
-      "files": ["src/pii_shield/strategies/masking.py", "tests/strategies/test_masking.py"]
-    },
-    {
-      "id": "PII-018",
-      "epic": "Strategies",
-      "title": "Hashing strategy",
-      "description": "Pseudonymize PII with consistent hashing",
-      "status": "backlog",
-      "priority": "low",
-      "story_points": 3,
-      "acceptance_criteria": [
-        "SHA-256 based hashing",
-        "Optional salt for GDPR compliance",
-        "Same input = same output (consistency)"
-      ],
-      "files": ["src/pii_shield/strategies/hashing.py", "tests/strategies/test_hashing.py"]
-    },
-    {
-      "id": "PII-019",
+      "id": "PII-012",
       "epic": "Pipeline",
       "title": "Text processing pipeline",
       "description": "Orchestrate detectors and strategies for text processing with reporting",
@@ -321,97 +214,7 @@
       ]
     },
     {
-      "id": "PII-020",
-      "epic": "Pipeline",
-      "title": "CSV processor",
-      "description": "Process CSV files column by column",
-      "status": "backlog",
-      "priority": "low",
-      "story_points": 5,
-      "acceptance_criteria": [
-        "Streaming for large files",
-        "Column selection support",
-        "Preserves CSV structure"
-      ],
-      "files": ["src/pii_shield/pipeline/csv_processor.py", "tests/pipeline/test_csv.py"]
-    },
-    {
-      "id": "PII-021",
-      "epic": "Pipeline",
-      "title": "JSON processor",
-      "description": "Process nested JSON while preserving structure",
-      "status": "backlog",
-      "priority": "low",
-      "story_points": 5,
-      "acceptance_criteria": [
-        "Recursive traversal",
-        "Preserves JSON structure",
-        "Path-based field selection"
-      ],
-      "files": ["src/pii_shield/pipeline/json_processor.py", "tests/pipeline/test_json.py"]
-    },
-    {
-      "id": "PII-022",
-      "epic": "ML",
-      "title": "Presidio integration",
-      "description": "Integrate Microsoft Presidio for NER-based detection",
-      "status": "backlog",
-      "priority": "medium",
-      "story_points": 5,
-      "acceptance_criteria": [
-        "German language support via spaCy",
-        "Name and address detection",
-        "Confidence scores mapped"
-      ],
-      "files": ["src/pii_shield/detectors/presidio.py", "tests/detectors/test_presidio.py"]
-    },
-    {
-      "id": "PII-023",
-      "epic": "ML",
-      "title": "German custom recognizers",
-      "description": "Custom Presidio recognizers for German-specific PII",
-      "status": "backlog",
-      "priority": "medium",
-      "story_points": 5,
-      "acceptance_criteria": [
-        "Enhanced IBAN recognizer",
-        "Personalausweis recognizer",
-        "German address patterns"
-      ],
-      "files": ["src/pii_shield/detectors/german_recognizers.py", "tests/detectors/test_german_recognizers.py"]
-    },
-    {
-      "id": "PII-024",
-      "epic": "ML",
-      "title": "Ensemble detector",
-      "description": "Combine rule-based and ML detectors",
-      "status": "backlog",
-      "priority": "medium",
-      "story_points": 5,
-      "acceptance_criteria": [
-        "Merges overlapping matches",
-        "Confidence score aggregation",
-        "Configurable detector weights"
-      ],
-      "files": ["src/pii_shield/detectors/ensemble.py", "tests/detectors/test_ensemble.py"]
-    },
-    {
-      "id": "PII-025",
-      "epic": "ML",
-      "title": "LLM Detector (Not Implemented)",
-      "description": "Context-aware PII detection using Large Language Models. NOT IMPLEMENTED due to security concerns: sending PII data to external LLM APIs (OpenAI, Anthropic, etc.) would violate GDPR and data protection principles. The core purpose of this service is to protect PII, so transmitting it to third-party services defeats that goal. Local/on-premise LLMs could be considered in the future.",
-      "status": "wont_do",
-      "priority": "low",
-      "story_points": 0,
-      "acceptance_criteria": [
-        "Intentionally not implemented for security reasons",
-        "PII must never leave the processing environment",
-        "Alternative: Use rule-based + Presidio/NER which run locally"
-      ],
-      "files": []
-    },
-    {
-      "id": "PII-026",
+      "id": "PII-013",
       "epic": "API",
       "title": "FastAPI service",
       "description": "Complete REST API with models, routes, middleware, and application setup",
@@ -436,6 +239,203 @@
         "src/pii_shield/api/main.py",
         "tests/api/test_routes.py"
       ]
+    },
+    {
+      "id": "PII-014",
+      "epic": "Detectors",
+      "title": "Phone detector",
+      "description": "Detect German phone number formats",
+      "status": "backlog",
+      "priority": "high",
+      "story_points": 5,
+      "acceptance_criteria": [
+        "German landline formats detected",
+        "Mobile formats detected (+49, 0049, 0)",
+        "International formats supported",
+        "Unit tests pass"
+      ],
+      "files": ["src/pii_shield/detectors/phone.py", "tests/detectors/test_phone.py"]
+    },
+    {
+      "id": "PII-015",
+      "epic": "Detectors",
+      "title": "IBAN detector",
+      "description": "Detect and validate German IBAN numbers",
+      "status": "backlog",
+      "priority": "high",
+      "story_points": 5,
+      "acceptance_criteria": [
+        "German IBAN format detected (DE + 20 digits)",
+        "Checksum validation (mod 97)",
+        "Other EU IBANs supported",
+        "Unit tests pass"
+      ],
+      "files": ["src/pii_shield/detectors/iban.py", "tests/detectors/test_iban.py"]
+    },
+    {
+      "id": "PII-016",
+      "epic": "Detectors",
+      "title": "German ID (Personalausweis) detector",
+      "description": "Detect German ID card numbers with check digit validation",
+      "status": "backlog",
+      "priority": "high",
+      "story_points": 5,
+      "acceptance_criteria": [
+        "Format: 9 chars alphanumeric (e.g., L01X00T471)",
+        "Check digit algorithm implemented",
+        "Unit tests pass"
+      ],
+      "files": ["src/pii_shield/detectors/german_id.py", "tests/detectors/test_german_id.py"]
+    },
+    {
+      "id": "PII-017",
+      "epic": "Detectors",
+      "title": "Credit card detector",
+      "description": "Detect credit card numbers with Luhn validation",
+      "status": "backlog",
+      "priority": "low",
+      "story_points": 3,
+      "acceptance_criteria": [
+        "Major card types detected (Visa, MC, Amex)",
+        "Luhn checksum validation",
+        "Formatted and unformatted numbers"
+      ],
+      "files": ["src/pii_shield/detectors/credit_card.py", "tests/detectors/test_credit_card.py"]
+    },
+    {
+      "id": "PII-018",
+      "epic": "Detectors",
+      "title": "IP address detector",
+      "description": "Detect IPv4 and IPv6 addresses",
+      "status": "backlog",
+      "priority": "low",
+      "story_points": 3,
+      "acceptance_criteria": [
+        "IPv4 addresses detected",
+        "IPv6 addresses detected",
+        "Private vs public distinguished"
+      ],
+      "files": ["src/pii_shield/detectors/ip.py", "tests/detectors/test_ip.py"]
+    },
+    {
+      "id": "PII-019",
+      "epic": "Strategies",
+      "title": "Masking strategy",
+      "description": "Partially mask PII while preserving format",
+      "status": "backlog",
+      "priority": "low",
+      "story_points": 3,
+      "acceptance_criteria": [
+        "Email: j***@example.com",
+        "Phone: +49 *** *** 1234",
+        "Configurable mask character"
+      ],
+      "files": ["src/pii_shield/strategies/masking.py", "tests/strategies/test_masking.py"]
+    },
+    {
+      "id": "PII-020",
+      "epic": "Strategies",
+      "title": "Hashing strategy",
+      "description": "Pseudonymize PII with consistent hashing",
+      "status": "backlog",
+      "priority": "low",
+      "story_points": 3,
+      "acceptance_criteria": [
+        "SHA-256 based hashing",
+        "Optional salt for GDPR compliance",
+        "Same input = same output (consistency)"
+      ],
+      "files": ["src/pii_shield/strategies/hashing.py", "tests/strategies/test_hashing.py"]
+    },
+    {
+      "id": "PII-021",
+      "epic": "Pipeline",
+      "title": "CSV processor",
+      "description": "Process CSV files column by column",
+      "status": "backlog",
+      "priority": "low",
+      "story_points": 5,
+      "acceptance_criteria": [
+        "Streaming for large files",
+        "Column selection support",
+        "Preserves CSV structure"
+      ],
+      "files": ["src/pii_shield/pipeline/csv_processor.py", "tests/pipeline/test_csv.py"]
+    },
+    {
+      "id": "PII-022",
+      "epic": "Pipeline",
+      "title": "JSON processor",
+      "description": "Process nested JSON while preserving structure",
+      "status": "backlog",
+      "priority": "low",
+      "story_points": 5,
+      "acceptance_criteria": [
+        "Recursive traversal",
+        "Preserves JSON structure",
+        "Path-based field selection"
+      ],
+      "files": ["src/pii_shield/pipeline/json_processor.py", "tests/pipeline/test_json.py"]
+    },
+    {
+      "id": "PII-023",
+      "epic": "ML",
+      "title": "Presidio integration",
+      "description": "Integrate Microsoft Presidio for NER-based detection",
+      "status": "backlog",
+      "priority": "medium",
+      "story_points": 5,
+      "acceptance_criteria": [
+        "German language support via spaCy",
+        "Name and address detection",
+        "Confidence scores mapped"
+      ],
+      "files": ["src/pii_shield/detectors/presidio.py", "tests/detectors/test_presidio.py"]
+    },
+    {
+      "id": "PII-024",
+      "epic": "ML",
+      "title": "German custom recognizers",
+      "description": "Custom Presidio recognizers for German-specific PII",
+      "status": "backlog",
+      "priority": "medium",
+      "story_points": 5,
+      "acceptance_criteria": [
+        "Enhanced IBAN recognizer",
+        "Personalausweis recognizer",
+        "German address patterns"
+      ],
+      "files": ["src/pii_shield/detectors/german_recognizers.py", "tests/detectors/test_german_recognizers.py"]
+    },
+    {
+      "id": "PII-025",
+      "epic": "ML",
+      "title": "Ensemble detector",
+      "description": "Combine rule-based and ML detectors",
+      "status": "backlog",
+      "priority": "medium",
+      "story_points": 5,
+      "acceptance_criteria": [
+        "Merges overlapping matches",
+        "Confidence score aggregation",
+        "Configurable detector weights"
+      ],
+      "files": ["src/pii_shield/detectors/ensemble.py", "tests/detectors/test_ensemble.py"]
+    },
+    {
+      "id": "PII-026",
+      "epic": "ML",
+      "title": "LLM Detector (Not Implemented)",
+      "description": "Context-aware PII detection using Large Language Models. NOT IMPLEMENTED due to security concerns: sending PII data to external LLM APIs (OpenAI, Anthropic, etc.) would violate GDPR and data protection principles. The core purpose of this service is to protect PII, so transmitting it to third-party services defeats that goal. Local/on-premise LLMs could be considered in the future.",
+      "status": "wont_do",
+      "priority": "low",
+      "story_points": 0,
+      "acceptance_criteria": [
+        "Intentionally not implemented for security reasons",
+        "PII must never leave the processing environment",
+        "Alternative: Use rule-based + Presidio/NER which run locally"
+      ],
+      "files": []
     },
     {
       "id": "PII-027",
