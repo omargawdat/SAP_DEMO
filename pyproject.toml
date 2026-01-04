@@ -34,6 +34,9 @@ dev = [
 ]
 demo = [
     "streamlit>=1.40",
+    "requests>=2.31",
+    "plotly>=5.18",
+    "pandas>=2.1",
 ]
 databricks = [
     "pyspark>=3.5",

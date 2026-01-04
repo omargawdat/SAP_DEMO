@@ -38,9 +38,8 @@ venv/
 .github/
 justfile
 
-# Documentation and demo (not needed in production)
+# Documentation (not needed in production)
 docs/
-demo/
 notebooks/
 
 # Tests (not needed in production image)

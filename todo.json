@@ -442,7 +442,7 @@
       "epic": "Demo",
       "title": "Streamlit demo",
       "description": "Interactive demo showcasing PII detection",
-      "status": "backlog",
+      "status": "done",
       "priority": "high",
       "story_points": 5,
       "acceptance_criteria": [
