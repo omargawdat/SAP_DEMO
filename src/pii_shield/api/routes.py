@@ -24,6 +24,7 @@ from pii_shield.detectors import (
     IBANDetector,
     IPAddressDetector,
     PhoneDetector,
+    PresidioDetector,
 )
 from pii_shield.pipeline import TextProcessor
 from pii_shield.strategies import RedactionStrategy
@@ -32,12 +33,15 @@ router = APIRouter(prefix="/api/v1")
 
 # Available detectors
 DETECTORS = [
+    # Rule-based detectors (fast, high precision)
     EmailDetector(),
     PhoneDetector(),
     IBANDetector(),
     GermanIDDetector(),
     CreditCardDetector(),
     IPAddressDetector(),
+    # ML-based detector (NER for names, addresses)
+    PresidioDetector(language="de"),
 ]
 
 # Available strategies

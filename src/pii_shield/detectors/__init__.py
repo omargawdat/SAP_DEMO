@@ -7,6 +7,7 @@ from pii_shield.detectors.german_id import GermanIDDetector
 from pii_shield.detectors.iban import IBANDetector
 from pii_shield.detectors.ip import IPAddressDetector
 from pii_shield.detectors.phone import PhoneDetector
+from pii_shield.detectors.presidio import PresidioDetector
 
 __all__ = [
     "Detector",
@@ -16,4 +17,5 @@ __all__ = [
     "IBANDetector",
     "IPAddressDetector",
     "PhoneDetector",
+    "PresidioDetector",
 ]

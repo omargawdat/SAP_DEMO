@@ -382,7 +382,7 @@
       "epic": "ML",
       "title": "Presidio integration",
       "description": "Integrate Microsoft Presidio for NER-based detection",
-      "status": "backlog",
+      "status": "done",
       "priority": "medium",
       "story_points": 5,
       "acceptance_criteria": [
@@ -421,21 +421,6 @@
         "Configurable detector weights"
       ],
       "files": ["src/pii_shield/detectors/ensemble.py", "tests/detectors/test_ensemble.py"]
-    },
-    {
-      "id": "PII-026",
-      "epic": "ML",
-      "title": "LLM Detector (Not Implemented)",
-      "description": "Context-aware PII detection using Large Language Models. NOT IMPLEMENTED due to security concerns: sending PII data to external LLM APIs (OpenAI, Anthropic, etc.) would violate GDPR and data protection principles. The core purpose of this service is to protect PII, so transmitting it to third-party services defeats that goal. Local/on-premise LLMs could be considered in the future.",
-      "status": "wont_do",
-      "priority": "low",
-      "story_points": 0,
-      "acceptance_criteria": [
-        "Intentionally not implemented for security reasons",
-        "PII must never leave the processing environment",
-        "Alternative: Use rule-based + Presidio/NER which run locally"
-      ],
-      "files": []
     },
     {
       "id": "PII-027",
