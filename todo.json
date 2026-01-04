@@ -113,7 +113,7 @@
       "epic": "Core",
       "title": "Core types and models",
       "description": "Define PIIType enum, PIIMatch dataclass, and DetectionResult",
-      "status": "todo",
+      "status": "done",
       "priority": "high",
       "story_points": 3,
       "acceptance_criteria": [
@@ -126,64 +126,49 @@
     {
       "id": "PII-009",
       "epic": "Preprocessing",
-      "title": "Preprocessor base class",
-      "description": "Design the preprocessor interface for text transformations",
-      "status": "backlog",
+      "title": "Text preprocessing",
+      "description": "Base preprocessor interface and text normalizer for consistent detection",
+      "status": "done",
       "priority": "medium",
-      "story_points": 2,
+      "story_points": 4,
       "acceptance_criteria": [
-        "Abstract base class defined",
-        "process() method signature established"
-      ],
-      "files": ["src/pii_shield/preprocessing/__init__.py", "src/pii_shield/preprocessing/base.py"]
-    },
-    {
-      "id": "PII-010",
-      "epic": "Preprocessing",
-      "title": "Text normalizer",
-      "description": "Normalize whitespace, line breaks, and Unicode for consistent detection",
-      "status": "backlog",
-      "priority": "medium",
-      "story_points": 3,
-      "acceptance_criteria": [
+        "Abstract base class with process() method",
         "Whitespace normalized",
         "Unicode normalized (NFC)",
         "Unit tests pass"
       ],
-      "files": ["src/pii_shield/preprocessing/normalizer.py", "tests/preprocessing/test_normalizer.py"]
+      "files": [
+        "src/pii_shield/preprocessing/__init__.py",
+        "src/pii_shield/preprocessing/base.py",
+        "src/pii_shield/preprocessing/normalizer.py",
+        "tests/preprocessing/test_normalizer.py"
+      ]
     },
     {
-      "id": "PII-013",
+      "id": "PII-010",
       "epic": "Detectors",
-      "title": "Detector base class",
-      "description": "Design the detector interface for PII detection",
+      "title": "Detector base + Email detector",
+      "description": "Design detector interface and implement email detection with RFC 5322 compliance",
       "status": "backlog",
       "priority": "high",
-      "story_points": 2,
+      "story_points": 5,
       "acceptance_criteria": [
-        "Abstract base class defined",
-        "detect() returns list of PIIMatch",
-        "Confidence scores supported"
-      ],
-      "files": ["src/pii_shield/detectors/__init__.py", "src/pii_shield/detectors/base.py"]
-    },
-    {
-      "id": "PII-014",
-      "epic": "Detectors",
-      "title": "Email detector",
-      "description": "Detect email addresses with RFC 5322 compliance",
-      "status": "backlog",
-      "priority": "high",
-      "story_points": 3,
-      "acceptance_criteria": [
+        "Abstract base class with detect() returning list of PIIMatch",
+        "Confidence scores supported",
         "Standard emails detected",
         "Edge cases handled (plus addressing, subdomains)",
-        "Low false positive rate"
+        "Low false positive rate",
+        "Unit tests pass"
       ],
-      "files": ["src/pii_shield/detectors/email.py", "tests/detectors/test_email.py"]
+      "files": [
+        "src/pii_shield/detectors/__init__.py",
+        "src/pii_shield/detectors/base.py",
+        "src/pii_shield/detectors/email.py",
+        "tests/detectors/test_email.py"
+      ]
     },
     {
-      "id": "PII-015",
+      "id": "PII-011",
       "epic": "Detectors",
       "title": "Phone detector",
       "description": "Detect German phone number formats",
@@ -193,12 +178,13 @@
       "acceptance_criteria": [
         "German landline formats detected",
         "Mobile formats detected (+49, 0049, 0)",
-        "International formats supported"
+        "International formats supported",
+        "Unit tests pass"
       ],
       "files": ["src/pii_shield/detectors/phone.py", "tests/detectors/test_phone.py"]
     },
     {
-      "id": "PII-016",
+      "id": "PII-012",
       "epic": "Detectors",
       "title": "IBAN detector",
       "description": "Detect and validate German IBAN numbers",
@@ -208,32 +194,33 @@
       "acceptance_criteria": [
         "German IBAN format detected (DE + 20 digits)",
         "Checksum validation (mod 97)",
-        "Other EU IBANs supported"
+        "Other EU IBANs supported",
+        "Unit tests pass"
       ],
       "files": ["src/pii_shield/detectors/iban.py", "tests/detectors/test_iban.py"]
     },
     {
-      "id": "PII-017",
+      "id": "PII-013",
       "epic": "Detectors",
-      "title": "Research Personalausweis format",
-      "description": "Research German ID card number format and validation rules",
+      "title": "German ID (Personalausweis) detector",
+      "description": "Detect German ID card numbers with check digit validation",
       "status": "backlog",
       "priority": "high",
-      "story_points": 3,
+      "story_points": 5,
       "acceptance_criteria": [
-        "Format documented (9 chars alphanumeric)",
-        "Check digit algorithm understood",
-        "Test cases identified"
+        "Format: 9 chars alphanumeric (e.g., L01X00T471)",
+        "Check digit algorithm implemented",
+        "Unit tests pass"
       ],
       "files": ["src/pii_shield/detectors/german_id.py", "tests/detectors/test_german_id.py"]
     },
     {
-      "id": "PII-018",
+      "id": "PII-014",
       "epic": "Detectors",
       "title": "Credit card detector",
       "description": "Detect credit card numbers with Luhn validation",
       "status": "backlog",
-      "priority": "medium",
+      "priority": "low",
       "story_points": 3,
       "acceptance_criteria": [
         "Major card types detected (Visa, MC, Amex)",
@@ -243,12 +230,12 @@
       "files": ["src/pii_shield/detectors/credit_card.py", "tests/detectors/test_credit_card.py"]
     },
     {
-      "id": "PII-019",
+      "id": "PII-015",
       "epic": "Detectors",
       "title": "IP address detector",
       "description": "Detect IPv4 and IPv6 addresses",
       "status": "backlog",
-      "priority": "medium",
+      "priority": "low",
       "story_points": 3,
       "acceptance_criteria": [
         "IPv4 addresses detected",
@@ -258,40 +245,33 @@
       "files": ["src/pii_shield/detectors/ip.py", "tests/detectors/test_ip.py"]
     },
     {
-      "id": "PII-020",
-      "epic": "Strategies",
-      "title": "Strategy base class",
-      "description": "Design interface for de-identification strategies",
-      "status": "backlog",
-      "priority": "high",
-      "story_points": 2,
-      "acceptance_criteria": [
-        "Abstract base class defined",
-        "apply() method transforms PIIMatch to replacement"
-      ],
-      "files": ["src/pii_shield/strategies/__init__.py", "src/pii_shield/strategies/base.py"]
-    },
-    {
-      "id": "PII-021",
+      "id": "PII-016",
       "epic": "Strategies",
       "title": "Redaction strategy",
-      "description": "Replace PII with type-specific placeholders",
+      "description": "Base strategy interface and redaction implementation",
       "status": "backlog",
       "priority": "high",
-      "story_points": 2,
+      "story_points": 4,
       "acceptance_criteria": [
+        "Abstract base class with apply() method",
         "Replaces with [EMAIL], [PHONE], etc.",
-        "Configurable placeholder format"
+        "Configurable placeholder format",
+        "Unit tests pass"
       ],
-      "files": ["src/pii_shield/strategies/redaction.py", "tests/strategies/test_redaction.py"]
+      "files": [
+        "src/pii_shield/strategies/__init__.py",
+        "src/pii_shield/strategies/base.py",
+        "src/pii_shield/strategies/redaction.py",
+        "tests/strategies/test_redaction.py"
+      ]
     },
     {
-      "id": "PII-022",
+      "id": "PII-017",
       "epic": "Strategies",
       "title": "Masking strategy",
       "description": "Partially mask PII while preserving format",
       "status": "backlog",
-      "priority": "medium",
+      "priority": "low",
       "story_points": 3,
       "acceptance_criteria": [
         "Email: j***@example.com",
@@ -301,12 +281,12 @@
       "files": ["src/pii_shield/strategies/masking.py", "tests/strategies/test_masking.py"]
     },
     {
-      "id": "PII-023",
+      "id": "PII-018",
       "epic": "Strategies",
       "title": "Hashing strategy",
       "description": "Pseudonymize PII with consistent hashing",
       "status": "backlog",
-      "priority": "medium",
+      "priority": "low",
       "story_points": 3,
       "acceptance_criteria": [
         "SHA-256 based hashing",
@@ -316,27 +296,37 @@
       "files": ["src/pii_shield/strategies/hashing.py", "tests/strategies/test_hashing.py"]
     },
     {
-      "id": "PII-024",
+      "id": "PII-019",
       "epic": "Pipeline",
-      "title": "Base processor",
-      "description": "Orchestrate detectors and strategies",
+      "title": "Text processing pipeline",
+      "description": "Orchestrate detectors and strategies for text processing with reporting",
       "status": "backlog",
       "priority": "high",
-      "story_points": 5,
+      "story_points": 8,
       "acceptance_criteria": [
         "Chains multiple detectors",
         "Applies selected strategy",
-        "Returns processed text + report"
+        "Character positions accurate after replacement",
+        "Returns processed text + detection report",
+        "Summary statistics and per-type breakdown",
+        "Export report to JSON format",
+        "Unit tests pass"
       ],
-      "files": ["src/pii_shield/pipeline/__init__.py", "src/pii_shield/pipeline/processor.py"]
+      "files": [
+        "src/pii_shield/pipeline/__init__.py",
+        "src/pii_shield/pipeline/processor.py",
+        "src/pii_shield/pipeline/report.py",
+        "tests/pipeline/test_processor.py",
+        "tests/pipeline/test_report.py"
+      ]
     },
     {
-      "id": "PII-025",
+      "id": "PII-020",
       "epic": "Pipeline",
       "title": "CSV processor",
       "description": "Process CSV files column by column",
       "status": "backlog",
-      "priority": "medium",
+      "priority": "low",
       "story_points": 5,
       "acceptance_criteria": [
         "Streaming for large files",
@@ -346,12 +336,12 @@
       "files": ["src/pii_shield/pipeline/csv_processor.py", "tests/pipeline/test_csv.py"]
     },
     {
-      "id": "PII-026",
+      "id": "PII-021",
       "epic": "Pipeline",
       "title": "JSON processor",
       "description": "Process nested JSON while preserving structure",
       "status": "backlog",
-      "priority": "medium",
+      "priority": "low",
       "story_points": 5,
       "acceptance_criteria": [
         "Recursive traversal",
@@ -361,56 +351,12 @@
       "files": ["src/pii_shield/pipeline/json_processor.py", "tests/pipeline/test_json.py"]
     },
     {
-      "id": "PII-027",
-      "epic": "Pipeline",
-      "title": "Text processor",
-      "description": "Process plain text with position tracking",
-      "status": "backlog",
-      "priority": "high",
-      "story_points": 3,
-      "acceptance_criteria": [
-        "Character positions accurate after replacement",
-        "Supports batch processing"
-      ],
-      "files": ["src/pii_shield/pipeline/text_processor.py", "tests/pipeline/test_text.py"]
-    },
-    {
-      "id": "PII-028",
-      "epic": "Pipeline",
-      "title": "Detection report",
-      "description": "Generate audit report of detected PII",
-      "status": "backlog",
-      "priority": "medium",
-      "story_points": 3,
-      "acceptance_criteria": [
-        "Summary statistics",
-        "Per-type breakdown",
-        "Export to JSON format"
-      ],
-      "files": ["src/pii_shield/pipeline/report.py", "tests/pipeline/test_report.py"]
-    },
-    {
-      "id": "PII-028a",
-      "epic": "Pipeline",
-      "title": "Manual review flagging",
-      "description": "Flag low-confidence detections for manual review instead of auto-processing",
-      "status": "backlog",
-      "priority": "medium",
-      "story_points": 3,
-      "acceptance_criteria": [
-        "Configurable confidence threshold (default 0.8)",
-        "PIIMatch includes needs_review field",
-        "Report separates confirmed vs needs-review items"
-      ],
-      "files": ["src/pii_shield/core/models.py", "src/pii_shield/pipeline/processor.py"]
-    },
-    {
-      "id": "PII-029",
+      "id": "PII-022",
       "epic": "ML",
       "title": "Presidio integration",
       "description": "Integrate Microsoft Presidio for NER-based detection",
       "status": "backlog",
-      "priority": "high",
+      "priority": "medium",
       "story_points": 5,
       "acceptance_criteria": [
         "German language support via spaCy",
@@ -420,12 +366,12 @@
       "files": ["src/pii_shield/detectors/presidio.py", "tests/detectors/test_presidio.py"]
     },
     {
-      "id": "PII-030",
+      "id": "PII-023",
       "epic": "ML",
       "title": "German custom recognizers",
       "description": "Custom Presidio recognizers for German-specific PII",
       "status": "backlog",
-      "priority": "high",
+      "priority": "medium",
       "story_points": 5,
       "acceptance_criteria": [
         "Enhanced IBAN recognizer",
@@ -435,12 +381,12 @@
       "files": ["src/pii_shield/detectors/german_recognizers.py", "tests/detectors/test_german_recognizers.py"]
     },
     {
-      "id": "PII-031",
+      "id": "PII-024",
       "epic": "ML",
       "title": "Ensemble detector",
       "description": "Combine rule-based and ML detectors",
       "status": "backlog",
-      "priority": "high",
+      "priority": "medium",
       "story_points": 5,
       "acceptance_criteria": [
         "Merges overlapping matches",
@@ -450,67 +396,49 @@
       "files": ["src/pii_shield/detectors/ensemble.py", "tests/detectors/test_ensemble.py"]
     },
     {
-      "id": "PII-032",
-      "epic": "API",
-      "title": "API Pydantic models",
-      "description": "Design request/response models for the API",
-      "status": "backlog",
-      "priority": "high",
-      "story_points": 3,
+      "id": "PII-025",
+      "epic": "ML",
+      "title": "LLM Detector (Not Implemented)",
+      "description": "Context-aware PII detection using Large Language Models. NOT IMPLEMENTED due to security concerns: sending PII data to external LLM APIs (OpenAI, Anthropic, etc.) would violate GDPR and data protection principles. The core purpose of this service is to protect PII, so transmitting it to third-party services defeats that goal. Local/on-premise LLMs could be considered in the future.",
+      "status": "wont_do",
+      "priority": "low",
+      "story_points": 0,
       "acceptance_criteria": [
-        "DetectRequest model",
-        "DetectResponse model",
-        "OpenAPI schema generated"
+        "Intentionally not implemented for security reasons",
+        "PII must never leave the processing environment",
+        "Alternative: Use rule-based + Presidio/NER which run locally"
       ],
-      "files": ["src/pii_shield/api/__init__.py", "src/pii_shield/api/models.py"]
+      "files": []
     },
     {
-      "id": "PII-033",
+      "id": "PII-026",
       "epic": "API",
-      "title": "API routes",
-      "description": "Implement REST endpoints",
+      "title": "FastAPI service",
+      "description": "Complete REST API with models, routes, middleware, and application setup",
       "status": "backlog",
       "priority": "high",
-      "story_points": 5,
+      "story_points": 8,
       "acceptance_criteria": [
+        "DetectRequest/DetectResponse Pydantic models",
         "POST /detect endpoint",
         "POST /anonymize endpoint",
-        "GET /health endpoint"
-      ],
-      "files": ["src/pii_shield/api/routes.py", "tests/api/test_routes.py"]
-    },
-    {
-      "id": "PII-034",
-      "epic": "API",
-      "title": "API middleware",
-      "description": "Add logging and error handling middleware",
-      "status": "backlog",
-      "priority": "medium",
-      "story_points": 3,
-      "acceptance_criteria": [
-        "Request logging",
-        "Error handling with proper status codes",
-        "Request timing"
-      ],
-      "files": ["src/pii_shield/api/middleware.py"]
-    },
-    {
-      "id": "PII-035",
-      "epic": "API",
-      "title": "FastAPI application",
-      "description": "Wire together routes and middleware",
-      "status": "backlog",
-      "priority": "high",
-      "story_points": 2,
-      "acceptance_criteria": [
-        "App factory pattern",
+        "GET /health endpoint",
+        "Request logging and error handling",
         "CORS configured",
-        "OpenAPI docs enabled"
+        "OpenAPI docs enabled",
+        "Unit tests pass"
       ],
-      "files": ["src/pii_shield/api/main.py"]
+      "files": [
+        "src/pii_shield/api/__init__.py",
+        "src/pii_shield/api/models.py",
+        "src/pii_shield/api/routes.py",
+        "src/pii_shield/api/middleware.py",
+        "src/pii_shield/api/main.py",
+        "tests/api/test_routes.py"
+      ]
     },
     {
-      "id": "PII-036",
+      "id": "PII-027",
       "epic": "DevOps",
       "title": "GitHub Actions CI",
       "description": "Setup CI pipeline for automated checks",
@@ -525,22 +453,7 @@
       "files": [".github/workflows/ci.yml"]
     },
     {
-      "id": "PII-037",
-      "epic": "DevOps",
-      "title": "Kubernetes manifests (Future)",
-      "description": "Create K8s deployment configs for production",
-      "status": "backlog",
-      "priority": "low",
-      "story_points": 8,
-      "acceptance_criteria": [
-        "Deployment manifests",
-        "Service definitions",
-        "ConfigMaps for settings"
-      ],
-      "files": ["k8s/"]
-    },
-    {
-      "id": "PII-038",
+      "id": "PII-028",
       "epic": "Demo",
       "title": "Streamlit demo",
       "description": "Interactive demo showcasing PII detection",
@@ -555,7 +468,7 @@
       "files": ["demo/app.py"]
     },
     {
-      "id": "PII-039",
+      "id": "PII-029",
       "epic": "Demo",
       "title": "Databricks notebook",
       "description": "PySpark integration for scalable processing",
@@ -570,34 +483,21 @@
       "files": ["notebooks/pii_spark.py"]
     },
     {
-      "id": "PII-040",
+      "id": "PII-030",
       "epic": "Demo",
-      "title": "Architecture diagrams",
-      "description": "Create system diagrams for documentation",
+      "title": "Documentation",
+      "description": "Architecture diagrams and comprehensive README",
       "status": "backlog",
       "priority": "medium",
-      "story_points": 3,
+      "story_points": 5,
       "acceptance_criteria": [
         "Component diagram",
         "Data flow diagram",
-        "Deployment diagram"
-      ],
-      "files": ["docs/architecture.md"]
-    },
-    {
-      "id": "PII-041",
-      "epic": "Demo",
-      "title": "Complete README",
-      "description": "Comprehensive documentation for new users",
-      "status": "backlog",
-      "priority": "medium",
-      "story_points": 3,
-      "acceptance_criteria": [
         "Quick start guide",
         "API documentation",
         "Architecture overview"
       ],
-      "files": ["README.md"]
+      "files": ["docs/architecture.md", "README.md"]
     }
   ]
 }

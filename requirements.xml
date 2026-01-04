@@ -34,7 +34,7 @@
         <directory name="core" purpose="Shared types: PIIType, PIIMatch, DetectionResult"/>
         <directory name="detectors" purpose="PII detection (rules, NER, ensemble)"/>
         <directory name="strategies" purpose="De-identification methods"/>
-        <directory name="preprocessing" purpose="Text normalization, encoding, language detection"/>
+        <directory name="preprocessing" purpose="Text normalization"/>
         <directory name="pipeline" purpose="Data processing"/>
         <directory name="api" purpose="FastAPI service"/>
       </directory>
@@ -52,8 +52,8 @@
 
   <architecture>
     <component name="Input">CSV/JSON Data, API Request</component>
-    <component name="Preprocessing">Text normalization, encoding handling, language detection, chunking</component>
-    <component name="Detection Engine">Rule Detectors, NER Model, LLM, Ensemble</component>
+    <component name="Preprocessing">Text normalization</component>
+    <component name="Detection Engine">Rule Detectors, NER Model (Presidio + spaCy), Ensemble</component>
     <component name="De-identification Engine">Applies strategies to detected PII</component>
     <component name="Output">Clean Data, Detection Report</component>
     <flow>Input -> Preprocessing -> Detection Engine -> De-identification Engine -> Output</flow>
@@ -62,14 +62,14 @@
   <api-flow>
     <step>Client sends POST /detect</step>
     <step>API calls Ensemble.detect(text)</step>
-    <step>Ensemble queries Rules, NER, LLM in parallel</step>
+    <step>Ensemble queries Rule Detectors and NER (Presidio) in parallel</step>
     <step>Ensemble returns PIIResult[]</step>
     <step>API returns JSON Response</step>
   </api-flow>
 
   <interview-points>
     <point topic="Why you built this">Wanted to understand real PII detection challenges</point>
-    <point topic="Technical depth">Implemented three approaches with clear trade-offs</point>
+    <point topic="Technical depth">Implemented two approaches (rule-based + NER) with clear trade-offs</point>
     <point topic="German focus">Included German PII patterns (IBAN, Personalausweis)</point>
     <point topic="Production mindset">Made it deployable with Docker and API</point>
   </interview-points>
@@ -79,6 +79,6 @@
     <item>Uses their stack - Python, Databricks, Cloud</item>
     <item>German-specific - IBAN, Personalausweis, German phone formats</item>
     <item>Production-ready - Docker, API, monitoring, tests</item>
-    <item>Modern approaches - LLM for context-aware detection</item>
+    <item>Security-first - All processing runs locally, PII never leaves the environment</item>
   </differentiators>
 </project>
