@@ -245,7 +245,7 @@
       "epic": "Detectors",
       "title": "Phone detector",
       "description": "Detect German phone number formats",
-      "status": "backlog",
+      "status": "done",
       "priority": "high",
       "story_points": 5,
       "acceptance_criteria": [
@@ -261,7 +261,7 @@
       "epic": "Detectors",
       "title": "IBAN detector",
       "description": "Detect and validate German IBAN numbers",
-      "status": "backlog",
+      "status": "done",
       "priority": "high",
       "story_points": 5,
       "acceptance_criteria": [
@@ -277,7 +277,7 @@
       "epic": "Detectors",
       "title": "German ID (Personalausweis) detector",
       "description": "Detect German ID card numbers with check digit validation",
-      "status": "backlog",
+      "status": "done",
       "priority": "high",
       "story_points": 5,
       "acceptance_criteria": [
@@ -292,7 +292,7 @@
       "epic": "Detectors",
       "title": "Credit card detector",
       "description": "Detect credit card numbers with Luhn validation",
-      "status": "backlog",
+      "status": "done",
       "priority": "low",
       "story_points": 3,
       "acceptance_criteria": [
@@ -307,7 +307,7 @@
       "epic": "Detectors",
       "title": "IP address detector",
       "description": "Detect IPv4 and IPv6 addresses",
-      "status": "backlog",
+      "status": "done",
       "priority": "low",
       "story_points": 3,
       "acceptance_criteria": [

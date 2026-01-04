@@ -17,14 +17,28 @@ from pii_shield.api.models import (
 )
 from pii_shield.core import PIIMatch
 from pii_shield.core.types import PIIType
-from pii_shield.detectors import EmailDetector
+from pii_shield.detectors import (
+    CreditCardDetector,
+    EmailDetector,
+    GermanIDDetector,
+    IBANDetector,
+    IPAddressDetector,
+    PhoneDetector,
+)
 from pii_shield.pipeline import TextProcessor
 from pii_shield.strategies import RedactionStrategy
 
 router = APIRouter(prefix="/api/v1")
 
 # Available detectors
-DETECTORS = [EmailDetector()]
+DETECTORS = [
+    EmailDetector(),
+    PhoneDetector(),
+    IBANDetector(),
+    GermanIDDetector(),
+    CreditCardDetector(),
+    IPAddressDetector(),
+]
 
 # Available strategies
 STRATEGIES = {
