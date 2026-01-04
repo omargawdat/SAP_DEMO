@@ -172,7 +172,7 @@
       "epic": "Strategies",
       "title": "Redaction strategy",
       "description": "Base strategy interface and redaction implementation",
-      "status": "backlog",
+      "status": "done",
       "priority": "high",
       "story_points": 4,
       "acceptance_criteria": [
@@ -498,6 +498,21 @@
         "Architecture overview"
       ],
       "files": ["docs/architecture.md", "README.md"]
+    },
+    {
+      "id": "PII-031",
+      "epic": "Demo",
+      "title": "Import schema into Apidog",
+      "description": "Import the OpenAPI schema from FastAPI into Apidog for API documentation and testing",
+      "status": "backlog",
+      "priority": "low",
+      "story_points": 1,
+      "acceptance_criteria": [
+        "OpenAPI schema exported from FastAPI",
+        "Schema imported into Apidog",
+        "All endpoints documented and testable"
+      ],
+      "files": []
     }
   ]
 }
