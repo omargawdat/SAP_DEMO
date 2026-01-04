@@ -302,18 +302,18 @@ def main():
 
             # High confidence matches (auto-approved, display only)
             if high_conf_matches:
-                st.markdown("#### ✅ High Confidence (Auto-Approved)")
-                for idx, match in high_conf_matches:
-                    col1, col2, col3, col4 = st.columns([0.5, 1.5, 3, 1])
-                    with col1:
-                        st.checkbox("Include", value=True, disabled=True, key=f"high_{idx}", label_visibility="collapsed")
-                    with col2:
-                        color = PII_COLORS.get(match["type"], "#888")
-                        st.markdown(f"<span style='color:{color};font-weight:bold;'>{match['type']}</span>", unsafe_allow_html=True)
-                    with col3:
-                        st.code(match["text"], language=None)
-                    with col4:
-                        st.markdown(f"**{match['confidence']:.0%}**")
+                with st.expander(f"✅ High Confidence (Auto-Approved) — {len(high_conf_matches)} items", expanded=False):
+                    for idx, match in high_conf_matches:
+                        col1, col2, col3, col4 = st.columns([0.5, 1.5, 3, 1])
+                        with col1:
+                            st.checkbox("Include", value=True, disabled=True, key=f"high_{idx}", label_visibility="collapsed")
+                        with col2:
+                            color = PII_COLORS.get(match["type"], "#888")
+                            st.markdown(f"<span style='color:{color};font-weight:bold;'>{match['type']}</span>", unsafe_allow_html=True)
+                        with col3:
+                            st.code(match["text"], language=None)
+                        with col4:
+                            st.markdown(f"**{match['confidence']:.0%}**")
 
             st.divider()
 
