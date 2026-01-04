@@ -1,3 +1,5 @@
+# Local development compose file with hot reload
+# Usage: just dev
 services:
   api:
     build:
@@ -5,8 +7,14 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
+    volumes:
+      # Mount source code for hot reload
+      - ./src:/app/src:ro
+    environment:
+      - PYTHONPATH=/app/src
+    command: uvicorn pii_shield.api.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app/src
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
       interval: 30s
       timeout: 10s
       retries: 3

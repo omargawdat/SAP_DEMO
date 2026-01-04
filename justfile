@@ -68,27 +68,27 @@ docker-run:
 
 # Build all Docker Compose services
 compose-build:
-    docker compose build
+    docker compose -f docker-compose-local.yml build
 
-# Start API only (with build)
+# Start API with hot reload
 api:
-    docker compose up api --build
+    docker compose -f docker-compose-local.yml up api --build
 
-# Start all services (API + UI)
+# Start all services (API + UI) with hot reload
 compose-up:
-    docker compose up
+    docker compose -f docker-compose-local.yml up --build
 
 # Start all services in detached mode
 compose-up-d:
-    docker compose up -d
+    docker compose -f docker-compose-local.yml up -d --build
 
 # Stop all services
 compose-down:
-    docker compose down
+    docker compose -f docker-compose-local.yml down
 
 # Show API logs
 logs:
-    docker compose logs -f api
+    docker compose -f docker-compose-local.yml logs -f api
 
 # Clean build artifacts
 clean:
