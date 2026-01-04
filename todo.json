@@ -348,36 +348,6 @@
       "files": ["src/pii_shield/strategies/hashing.py", "tests/strategies/test_hashing.py"]
     },
     {
-      "id": "PII-021",
-      "epic": "Pipeline",
-      "title": "CSV processor",
-      "description": "Process CSV files column by column",
-      "status": "backlog",
-      "priority": "low",
-      "story_points": 5,
-      "acceptance_criteria": [
-        "Streaming for large files",
-        "Column selection support",
-        "Preserves CSV structure"
-      ],
-      "files": ["src/pii_shield/pipeline/csv_processor.py", "tests/pipeline/test_csv.py"]
-    },
-    {
-      "id": "PII-022",
-      "epic": "Pipeline",
-      "title": "JSON processor",
-      "description": "Process nested JSON while preserving structure",
-      "status": "backlog",
-      "priority": "low",
-      "story_points": 5,
-      "acceptance_criteria": [
-        "Recursive traversal",
-        "Preserves JSON structure",
-        "Path-based field selection"
-      ],
-      "files": ["src/pii_shield/pipeline/json_processor.py", "tests/pipeline/test_json.py"]
-    },
-    {
       "id": "PII-023",
       "epic": "ML",
       "title": "Presidio integration",
@@ -391,36 +361,6 @@
         "Confidence scores mapped"
       ],
       "files": ["src/pii_shield/detectors/presidio.py", "tests/detectors/test_presidio.py"]
-    },
-    {
-      "id": "PII-024",
-      "epic": "ML",
-      "title": "German custom recognizers",
-      "description": "Custom Presidio recognizers for German-specific PII",
-      "status": "backlog",
-      "priority": "medium",
-      "story_points": 5,
-      "acceptance_criteria": [
-        "Enhanced IBAN recognizer",
-        "Personalausweis recognizer",
-        "German address patterns"
-      ],
-      "files": ["src/pii_shield/detectors/german_recognizers.py", "tests/detectors/test_german_recognizers.py"]
-    },
-    {
-      "id": "PII-025",
-      "epic": "ML",
-      "title": "Ensemble detector",
-      "description": "Combine rule-based and ML detectors",
-      "status": "backlog",
-      "priority": "medium",
-      "story_points": 5,
-      "acceptance_criteria": [
-        "Merges overlapping matches",
-        "Confidence score aggregation",
-        "Configurable detector weights"
-      ],
-      "files": ["src/pii_shield/detectors/ensemble.py", "tests/detectors/test_ensemble.py"]
     },
     {
       "id": "PII-027",
@@ -440,17 +380,23 @@
     {
       "id": "PII-028",
       "epic": "Demo",
-      "title": "Streamlit demo",
-      "description": "Interactive demo showcasing PII detection",
+      "title": "Streamlit demo with Human-in-the-Loop",
+      "description": "Interactive 3-step workflow demo showcasing PII detection with human oversight",
       "status": "done",
       "priority": "high",
-      "story_points": 5,
+      "story_points": 13,
       "acceptance_criteria": [
-        "Text input with live detection",
-        "Visual highlighting of PII",
-        "Strategy selection"
+        "3-step workflow: Analyze → Review → Result",
+        "Human-in-the-loop verification for low-confidence detections",
+        "Confidence threshold slider for auto-approve",
+        "Before/after text comparison",
+        "Plotly analytics dashboard (gauge, donut charts)",
+        "PII explainability with annotated text and color-coded highlights",
+        "Detection breakdown table with reasons",
+        "Strategy selection (redaction, masking, hashing)",
+        "API request/response panels for transparency"
       ],
-      "files": ["demo/app.py"]
+      "files": ["demo/app.py", "demo/components.py", "demo/styles.py", "demo/sample_texts.py"]
     },
     {
       "id": "PII-029",
@@ -470,34 +416,97 @@
     {
       "id": "PII-030",
       "epic": "Demo",
-      "title": "Documentation",
-      "description": "Architecture diagrams and comprehensive README",
+      "title": "README documentation",
+      "description": "Comprehensive README with quick start guide and project overview",
       "status": "backlog",
       "priority": "medium",
-      "story_points": 5,
+      "story_points": 3,
       "acceptance_criteria": [
-        "Component diagram",
-        "Data flow diagram",
-        "Quick start guide",
-        "API documentation",
-        "Architecture overview"
+        "Project overview and purpose",
+        "Quick start guide (Docker + local)",
+        "API endpoints documentation",
+        "Usage examples"
       ],
-      "files": ["docs/architecture.md", "README.md"]
+      "files": ["README.md"]
     },
     {
-      "id": "PII-031",
+      "id": "PII-032",
       "epic": "Demo",
-      "title": "Import schema into Apidog",
-      "description": "Import the OpenAPI schema from FastAPI into Apidog for API documentation and testing",
+      "title": "Architecture diagrams",
+      "description": "Visual diagrams explaining the system architecture and data flow",
       "status": "backlog",
-      "priority": "low",
-      "story_points": 1,
+      "priority": "medium",
+      "story_points": 3,
       "acceptance_criteria": [
-        "OpenAPI schema exported from FastAPI",
-        "Schema imported into Apidog",
-        "All endpoints documented and testable"
+        "Component diagram (detectors, strategies, pipeline)",
+        "Data flow diagram (input → detection → anonymization)",
+        "System architecture overview"
+      ],
+      "files": ["docs/architecture.md"]
+    },
+    {
+      "id": "PII-033",
+      "epic": "DevOps",
+      "title": "Terraform infrastructure",
+      "description": "Infrastructure as Code for cloud deployment",
+      "status": "backlog",
+      "priority": "high",
+      "story_points": 5,
+      "acceptance_criteria": [
+        "AWS/Azure resource definitions",
+        "Container registry setup",
+        "Networking and security groups",
+        "Environment variables and secrets management"
+      ],
+      "files": ["terraform/main.tf", "terraform/variables.tf", "terraform/outputs.tf"]
+    },
+    {
+      "id": "PII-034",
+      "epic": "DevOps",
+      "title": "Cloud deployment",
+      "description": "Deploy API and UI to cloud infrastructure",
+      "status": "backlog",
+      "priority": "high",
+      "story_points": 5,
+      "acceptance_criteria": [
+        "Container deployed to cloud (ECS/AKS)",
+        "Health checks and monitoring",
+        "Public endpoint accessible",
+        "Environment configuration"
       ],
       "files": []
+    },
+    {
+      "id": "PII-035",
+      "epic": "ML",
+      "title": "LLM-Enhanced Detection",
+      "description": "Integrate LLM (OpenAI/Claude) for context-aware PII detection",
+      "status": "backlog",
+      "priority": "high",
+      "story_points": 5,
+      "acceptance_criteria": [
+        "LLM API integration (OpenAI or Anthropic)",
+        "Context-aware PII detection",
+        "Fallback to rule-based if LLM unavailable",
+        "Demo in Streamlit UI"
+      ],
+      "files": ["src/pii_shield/detectors/llm.py", "tests/detectors/test_llm.py"]
+    },
+    {
+      "id": "PII-036",
+      "epic": "Demo",
+      "title": "GDPR Compliance Documentation",
+      "description": "Document how the system supports GDPR compliance",
+      "status": "backlog",
+      "priority": "medium",
+      "story_points": 2,
+      "acceptance_criteria": [
+        "Explain pseudonymization vs anonymization",
+        "Right to erasure support",
+        "Data minimization principles",
+        "Why confidence thresholds matter"
+      ],
+      "files": ["docs/gdpr.md"]
     }
   ]
 }
