@@ -70,6 +70,10 @@ docker-run:
 compose-build:
     docker compose build
 
+# Start API only (with build)
+api:
+    docker compose up api --build
+
 # Start all services (API + UI)
 compose-up:
     docker compose up

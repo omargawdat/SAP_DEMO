@@ -193,7 +193,7 @@
       "epic": "Pipeline",
       "title": "Text processing pipeline",
       "description": "Orchestrate detectors and strategies for text processing with reporting",
-      "status": "backlog",
+      "status": "done",
       "priority": "high",
       "story_points": 8,
       "acceptance_criteria": [
@@ -218,7 +218,7 @@
       "epic": "API",
       "title": "FastAPI service",
       "description": "Complete REST API with models, routes, middleware, and application setup",
-      "status": "backlog",
+      "status": "done",
       "priority": "high",
       "story_points": 8,
       "acceptance_criteria": [

@@ -6,15 +6,18 @@ WORKDIR /app
 # Install uv for fast dependency management
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
-# Copy dependency files
-COPY pyproject.toml uv.lock* ./
+# Copy project files needed for installation
+COPY pyproject.toml uv.lock* README.md ./
+COPY src/ ./src/
 
-# Create virtual environment and install dependencies
+# Create virtual environment, install dependencies, and install the package
 RUN uv venv /app/.venv && \
-    uv sync --frozen --no-dev
+    uv sync --frozen --no-dev && \
+    uv pip install .
 
-# Download spaCy German model
-RUN /app/.venv/bin/python -m spacy download de_core_news_sm
+# Install pip and download spaCy German model
+RUN /app/.venv/bin/python -m ensurepip && \
+    /app/.venv/bin/python -m spacy download de_core_news_sm
 
 # Stage 2: Runtime
 FROM python:3.13-slim
@@ -24,11 +27,8 @@ WORKDIR /app
 # Create non-root user for security
 RUN useradd --create-home --shell /bin/bash appuser
 
-# Copy virtual environment from builder
+# Copy virtual environment from builder (includes installed package)
 COPY --from=builder /app/.venv /app/.venv
-
-# Copy application source
-COPY src/ ./src/
 
 # Set environment variables
 ENV PATH="/app/.venv/bin:$PATH"

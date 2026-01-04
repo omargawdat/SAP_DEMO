@@ -42,7 +42,6 @@ justfile
 docs/
 demo/
 notebooks/
-*.md
 
 # Tests (not needed in production image)
 tests/
