@@ -86,6 +86,10 @@ compose-up-d:
 compose-down:
     docker compose down
 
+# Show API logs
+logs:
+    docker compose logs -f api
+
 # Clean build artifacts
 clean:
     rm -rf .pytest_cache .ruff_cache .coverage htmlcov dist build *.egg-info
