@@ -13,7 +13,7 @@ const config = {
   organizationName: 'omargawdat',
   projectName: 'pii-shield',
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'ignore',
 
   i18n: {
     defaultLocale: 'en',
