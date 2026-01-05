@@ -530,9 +530,19 @@ def main():
                             for item in comparison_data:
                                 del item["_sort"]
 
-                            # Display as styled dataframe
+                            # Display as styled dataframe with wider Reason column
                             df = pd.DataFrame(comparison_data)
-                            st.dataframe(df, use_container_width=True, hide_index=True)
+                            st.dataframe(
+                                df,
+                                use_container_width=True,
+                                hide_index=True,
+                                column_config={
+                                    "Reason": st.column_config.TextColumn(
+                                        "Reason",
+                                        width="large",
+                                    ),
+                                },
+                            )
 
                         # Summary stats (always show)
                         rejected_count = sum(1 for m in matches if m.get("llm_rejected", False))
