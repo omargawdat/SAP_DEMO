@@ -1,31 +1,6 @@
 """Sample German texts for PII detection demo with expected annotations."""
 
 SAMPLES = {
-    "Tricky Cases (LLM Demo)": {
-        "text": """Betreff: Kontodaten für Max Mustermann
-
-Personalausweis-Nr.: L01X00T471
-Reisepass-Nr.: C01X00T478
-Steuer-ID: 12345678901
-
-Kontakt: max.mustermann@sap.com
-Telefon: +49 171 1234567
-
-Firma: SAP Deutschland
-Produkt: SAP S/4HANA
-Straße: Dietmar-Hopp-Allee 16, Walldorf
-
-Bearbeitet von: Anna Schmidt""",
-        "annotations": [
-            {"type": "NAME", "text": "Max Mustermann"},
-            {"type": "NAME", "text": "Anna Schmidt"},
-            {"type": "GERMAN_ID", "text": "L01X00T471"},
-            {"type": "EMAIL", "text": "max.mustermann@sap.com"},
-            {"type": "PHONE", "text": "+49 171 1234567"},
-            {"type": "ADDRESS", "text": "Dietmar-Hopp-Allee 16"},
-            {"type": "ADDRESS", "text": "Walldorf"},
-        ],
-    },
     "HR Employee Record": {
         "text": """PERSONALAKTE - STRENG VERTRAULICH
 
