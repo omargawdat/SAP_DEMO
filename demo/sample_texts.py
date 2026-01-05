@@ -230,7 +230,8 @@ Letzte Prüfung durch: Datenschutzbeauftragter Thomas Müller (t.mueller@sap.com
             # Addresses (matching detector spans - includes postal codes when detected together)
             {"type": "ADDRESS", "text": "Berliner Straße 123"},
             {"type": "ADDRESS", "text": "10115 Berlin Deutschland"},
-            {"type": "ADDRESS", "text": "60311 Frankfurt am Main"},
+            {"type": "ADDRESS", "text": "Frankfurt am Main"},  # Geburtsort
+            {"type": "ADDRESS", "text": "60311 Frankfurt am Main"},  # Frühere Adresse
             # Emails
             {"type": "EMAIL", "text": "e.schneider@sap.com"},
             {"type": "EMAIL", "text": "elisabeth.schneider@gmail.com"},
