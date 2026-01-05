@@ -365,17 +365,35 @@
     {
       "id": "PII-027",
       "epic": "DevOps",
-      "title": "GitHub Actions CI",
-      "description": "Setup CI pipeline for automated checks",
-      "status": "backlog",
+      "title": "GitHub Actions CI/CD",
+      "description": "Setup CI/CD pipeline for automated testing and deployment",
+      "status": "wont_do",
       "priority": "medium",
       "story_points": 3,
+      "note": "Skipped due to time constraint",
       "acceptance_criteria": [
         "Lint on PR",
         "Tests on PR",
-        "Docker build verification"
+        "Docker build verification",
+        "Auto-deploy to AWS on merge"
       ],
-      "files": [".github/workflows/ci.yml"]
+      "files": [".github/workflows/ci.yml", ".github/workflows/deploy.yml"]
+    },
+    {
+      "id": "PII-036",
+      "epic": "DevOps",
+      "title": "GitHub OIDC for AWS",
+      "description": "Configure GitHub OIDC identity provider for secure AWS deployments without long-lived credentials",
+      "status": "wont_do",
+      "priority": "medium",
+      "story_points": 3,
+      "note": "Skipped due to time constraint",
+      "acceptance_criteria": [
+        "GitHub OIDC provider configured in AWS IAM",
+        "IAM role with trust policy for GitHub Actions",
+        "No AWS access keys stored in GitHub secrets"
+      ],
+      "files": ["infrastructure/terraform/oidc.tf"]
     },
     {
       "id": "PII-028",
@@ -397,21 +415,6 @@
         "API request/response panels for transparency"
       ],
       "files": ["demo/app.py", "demo/components.py", "demo/styles.py", "demo/sample_texts.py"]
-    },
-    {
-      "id": "PII-029",
-      "epic": "Demo",
-      "title": "Databricks notebook",
-      "description": "PySpark integration for scalable processing",
-      "status": "backlog",
-      "priority": "high",
-      "story_points": 8,
-      "acceptance_criteria": [
-        "UDF for PII detection",
-        "Delta Lake integration",
-        "Batch processing example"
-      ],
-      "files": ["notebooks/pii_spark.py"]
     },
     {
       "id": "PII-030",
