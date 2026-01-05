@@ -367,10 +367,9 @@
       "epic": "DevOps",
       "title": "GitHub Actions CI/CD",
       "description": "Setup CI/CD pipeline for automated testing and deployment",
-      "status": "wont_do",
+      "status": "done",
       "priority": "medium",
       "story_points": 3,
-      "note": "Skipped due to time constraint",
       "acceptance_criteria": [
         "Lint on PR",
         "Tests on PR",
@@ -421,7 +420,7 @@
       "epic": "Demo",
       "title": "README documentation",
       "description": "Comprehensive README with quick start guide and project overview",
-      "status": "backlog",
+      "status": "done",
       "priority": "medium",
       "story_points": 3,
       "acceptance_criteria": [
@@ -452,7 +451,7 @@
       "epic": "DevOps",
       "title": "AWS Terraform infrastructure",
       "description": "Infrastructure as Code for AWS cloud deployment using Terraform",
-      "status": "backlog",
+      "status": "done",
       "priority": "high",
       "story_points": 5,
       "acceptance_criteria": [
@@ -468,16 +467,16 @@
     {
       "id": "PII-034",
       "epic": "DevOps",
-      "title": "AWS ECS deployment",
-      "description": "Deploy API and UI containers to AWS ECS Fargate",
-      "status": "backlog",
+      "title": "AWS App Runner deployment",
+      "description": "Deploy API and UI containers to AWS App Runner",
+      "status": "done",
       "priority": "high",
       "story_points": 5,
       "acceptance_criteria": [
         "Docker images pushed to ECR",
-        "ECS services running on Fargate",
-        "Health checks and CloudWatch monitoring",
-        "Public endpoint via Route 53 domain",
+        "App Runner services deployed",
+        "Health checks configured",
+        "Public endpoint available",
         "Auto-scaling configured"
       ],
       "files": []
