@@ -496,27 +496,11 @@
       "files": ["src/pii_shield/detectors/llm_validator.py", "tests/detectors/test_llm_validator.py"]
     },
     {
-      "id": "PII-036",
-      "epic": "Demo",
-      "title": "GDPR Compliance Documentation",
-      "description": "Document how the system supports GDPR compliance",
-      "status": "backlog",
-      "priority": "medium",
-      "story_points": 2,
-      "acceptance_criteria": [
-        "Explain pseudonymization vs anonymization",
-        "Right to erasure support",
-        "Data minimization principles",
-        "Why confidence thresholds matter"
-      ],
-      "files": ["docs/gdpr.md"]
-    },
-    {
       "id": "PII-037",
       "epic": "ML",
       "title": "Performance Metrics Evaluation",
       "description": "Calculate and display performance metrics (accuracy, precision, recall, F1) for PII detection",
-      "status": "backlog",
+      "status": "done",
       "priority": "high",
       "story_points": 5,
       "acceptance_criteria": [
@@ -527,7 +511,7 @@
         "Compare metrics with and without LLM validation",
         "Display metrics in Streamlit demo or notebook"
       ],
-      "files": ["src/pii_shield/evaluation/metrics.py", "tests/evaluation/test_metrics.py", "notebooks/evaluation.ipynb"]
+      "files": ["demo/app.py", "demo/sample_texts.py"]
     }
   ]
 }
