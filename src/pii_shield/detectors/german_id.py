@@ -46,6 +46,12 @@ class GermanIDDetector(Detector):
             id_number = match.group(1).upper()
             check_digit = match.group(2)
 
+            # Filter out pure alphabetic matches (likely words, not IDs)
+            # Real German IDs contain digits (e.g., L01X00T471)
+            digit_count = sum(1 for c in id_number if c.isdigit())
+            if digit_count < 2:
+                continue  # Skip - real IDs have at least 2 digits
+
             # Calculate confidence based on check digit validation
             if check_digit:
                 expected = self._calculate_check_digit(id_number)

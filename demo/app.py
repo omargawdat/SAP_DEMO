@@ -13,7 +13,7 @@ from demo.styles import PII_COLORS, PII_ICONS, inject_custom_css
 
 # Configuration
 API_URL = os.getenv("API_URL", "http://localhost:8000")
-API_TIMEOUT = 30
+API_TIMEOUT = 60  # Increased for LLM validation (multiple API calls)
 DEFAULT_CONFIDENCE_THRESHOLD = 0.85
 
 # Detection reasons for explainability
@@ -168,6 +168,21 @@ def main():
         )
         st.session_state.input_text = input_text
 
+        # LLM model selection (None = no LLM, others = use that model)
+        llm_options = ["None", "Haiku", "Sonnet", "Opus"]
+        llm_selection = st.radio(
+            "🤖 LLM Validation",
+            options=llm_options,
+            index=llm_options.index(st.session_state.get("llm_selection", "None")),
+            horizontal=True,
+            help="None=rule-based only, Haiku=fast/cheap, Sonnet=balanced, Opus=most capable",
+        )
+        st.session_state.llm_selection = llm_selection
+        use_llm = llm_selection != "None"
+        st.session_state.use_llm = use_llm
+        if use_llm:
+            st.session_state.llm_model = llm_selection.lower()
+
         # Analyze button - immediately after text input
         analyze_clicked = st.button("🔍 Analyze Text", type="primary", use_container_width=True)
 
@@ -192,8 +207,11 @@ def main():
         # Handle analyze button click
         if analyze_clicked:
             if input_text.strip():
-                with st.spinner("Detecting PII..."):
-                    payload = {"text": input_text}
+                spinner_text = "Detecting PII with LLM validation..." if use_llm else "Detecting PII..."
+                with st.spinner(spinner_text):
+                    payload = {"text": input_text, "use_llm": use_llm}
+                    if use_llm:
+                        payload["llm_model"] = st.session_state.get("llm_model", "haiku")
                     response, request_info = call_api("detect", payload)
 
                     if response:

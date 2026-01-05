@@ -8,6 +8,22 @@ Intelligent de-identification service for detecting and removing Personally Iden
 just setup
 ```
 
+## Environment Configuration
+
+Copy the example environment file and configure your API keys:
+
+```bash
+cp .env.example .env
+```
+
+### Available Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `ANTHROPIC_API_KEY` | Optional | Anthropic API key for LLM-enhanced PII validation. Enables Claude AI to validate low-confidence detections. Get your key at [console.anthropic.com](https://console.anthropic.com/) |
+
+**Note:** LLM validation is optional. Without an API key, the system uses rule-based and ML detection only.
+
 ## Optional: German NER Support
 
 If you need German name/address detection via Presidio:

@@ -2,7 +2,11 @@
 
 import logging
 
+from dotenv import load_dotenv
 from fastapi import FastAPI
+
+# Load environment variables from .env file
+load_dotenv()
 from fastapi.middleware.cors import CORSMiddleware
 
 from pii_shield.api.middleware import RequestLoggingMiddleware

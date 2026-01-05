@@ -447,32 +447,35 @@
     {
       "id": "PII-033",
       "epic": "DevOps",
-      "title": "Terraform infrastructure",
-      "description": "Infrastructure as Code for cloud deployment",
+      "title": "AWS Terraform infrastructure",
+      "description": "Infrastructure as Code for AWS cloud deployment using Terraform",
       "status": "backlog",
       "priority": "high",
       "story_points": 5,
       "acceptance_criteria": [
-        "AWS/Azure resource definitions",
-        "Container registry setup",
-        "Networking and security groups",
-        "Environment variables and secrets management"
+        "AWS ECS Fargate cluster for container deployment",
+        "ECR container registry setup",
+        "Route 53 domain configuration",
+        "VPC, subnets, and security groups",
+        "Application Load Balancer with HTTPS",
+        "Environment variables and secrets via AWS Secrets Manager"
       ],
-      "files": ["terraform/main.tf", "terraform/variables.tf", "terraform/outputs.tf"]
+      "files": ["terraform/main.tf", "terraform/variables.tf", "terraform/outputs.tf", "terraform/ecs.tf", "terraform/route53.tf"]
     },
     {
       "id": "PII-034",
       "epic": "DevOps",
-      "title": "Cloud deployment",
-      "description": "Deploy API and UI to cloud infrastructure",
+      "title": "AWS ECS deployment",
+      "description": "Deploy API and UI containers to AWS ECS Fargate",
       "status": "backlog",
       "priority": "high",
       "story_points": 5,
       "acceptance_criteria": [
-        "Container deployed to cloud (ECS/AKS)",
-        "Health checks and monitoring",
-        "Public endpoint accessible",
-        "Environment configuration"
+        "Docker images pushed to ECR",
+        "ECS services running on Fargate",
+        "Health checks and CloudWatch monitoring",
+        "Public endpoint via Route 53 domain",
+        "Auto-scaling configured"
       ],
       "files": []
     },
@@ -480,17 +483,17 @@
       "id": "PII-035",
       "epic": "ML",
       "title": "LLM-Enhanced Detection",
-      "description": "Integrate LLM (OpenAI/Claude) for context-aware PII detection",
-      "status": "backlog",
+      "description": "Integrate Claude API for context-aware PII validation on low-confidence detections",
+      "status": "done",
       "priority": "high",
       "story_points": 5,
       "acceptance_criteria": [
-        "LLM API integration (OpenAI or Anthropic)",
-        "Context-aware PII detection",
+        "LLM API integration (Anthropic Claude)",
+        "Context-aware PII validation for low-confidence matches",
         "Fallback to rule-based if LLM unavailable",
-        "Demo in Streamlit UI"
+        "Demo in Streamlit UI with LLM toggle"
       ],
-      "files": ["src/pii_shield/detectors/llm.py", "tests/detectors/test_llm.py"]
+      "files": ["src/pii_shield/detectors/llm_validator.py", "tests/detectors/test_llm_validator.py"]
     },
     {
       "id": "PII-036",
@@ -507,6 +510,24 @@
         "Why confidence thresholds matter"
       ],
       "files": ["docs/gdpr.md"]
+    },
+    {
+      "id": "PII-037",
+      "epic": "ML",
+      "title": "Performance Metrics Evaluation",
+      "description": "Calculate and display performance metrics (accuracy, precision, recall, F1) for PII detection",
+      "status": "backlog",
+      "priority": "high",
+      "story_points": 5,
+      "acceptance_criteria": [
+        "Create labeled test dataset with ground truth annotations",
+        "Calculate precision (correct detections / total detections)",
+        "Calculate recall (detected PII / actual PII)",
+        "Calculate F1 score (harmonic mean of precision and recall)",
+        "Compare metrics with and without LLM validation",
+        "Display metrics in Streamlit demo or notebook"
+      ],
+      "files": ["src/pii_shield/evaluation/metrics.py", "tests/evaluation/test_metrics.py", "notebooks/evaluation.ipynb"]
     }
   ]
 }

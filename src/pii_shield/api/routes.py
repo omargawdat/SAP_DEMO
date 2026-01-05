@@ -26,10 +26,22 @@ from pii_shield.detectors import (
     PhoneDetector,
     PresidioDetector,
 )
+from pii_shield.detectors.llm_validator import LLMValidator
 from pii_shield.pipeline import TextProcessor
 from pii_shield.strategies import HashingStrategy, MaskingStrategy, RedactionStrategy
 
 router = APIRouter(prefix="/api/v1")
+
+# LLM validators cache (by model)
+_llm_validators: dict[str, LLMValidator] = {}
+
+
+def get_llm_validator(model: str = "haiku") -> LLMValidator:
+    """Get or create LLM validator instance for the specified model."""
+    global _llm_validators
+    if model not in _llm_validators:
+        _llm_validators[model] = LLMValidator(model=model)
+    return _llm_validators[model]
 
 # Available detectors
 DETECTORS = [
@@ -56,9 +68,12 @@ REVIEW_CONFIDENCE_THRESHOLD = 0.85
 
 
 def _build_match_schemas(
-    matches: list, confidence_threshold: float = REVIEW_CONFIDENCE_THRESHOLD
+    matches: list,
+    confidence_threshold: float = REVIEW_CONFIDENCE_THRESHOLD,
+    llm_reasons: dict[int, str] | None = None,
 ) -> list[PIIMatchSchema]:
     """Convert PIIMatch objects to Pydantic schemas."""
+    llm_reasons = llm_reasons or {}
     return [
         PIIMatchSchema(
             type=m.type.value,
@@ -68,8 +83,9 @@ def _build_match_schemas(
             confidence=m.confidence,
             detector=m.detector,
             review_required=m.confidence < confidence_threshold,
+            llm_reason=llm_reasons.get(i),
         )
-        for m in matches
+        for i, m in enumerate(matches)
     ]
 
 
@@ -92,9 +108,17 @@ Analyze text to find all Personally Identifiable Information (PII).
 
 **Supported PII types:**
 - Email addresses
-- Phone numbers (coming soon)
-- IBAN numbers (coming soon)
-- German ID numbers (coming soon)
+- Phone numbers (German formats)
+- IBAN numbers (with checksum validation)
+- German ID numbers (Personalausweis)
+- Credit card numbers (with Luhn validation)
+- IP addresses (IPv4 and IPv6)
+- Names and addresses (via ML/NER)
+
+**LLM Enhancement:**
+Set `use_llm: true` to validate low-confidence detections using Claude AI.
+This improves accuracy by distinguishing personal names from business names, etc.
+Requires ANTHROPIC_API_KEY environment variable.
 
 Returns a list of all detected PII with their positions and confidence scores.
 Does NOT modify the original text.
@@ -103,13 +127,58 @@ Does NOT modify the original text.
 )
 async def detect_pii(request: DetectRequest) -> DetectResponse:
     """Detect PII in text without de-identification."""
+    start_time = time.perf_counter()
+
     processor = TextProcessor(detectors=DETECTORS, strategy=None)
     report = processor.process(request.text)
 
+    llm_reasons: dict[int, str] = {}
+    final_matches = list(report.matches)
+
+    # Apply LLM validation if requested (sentence-based batching)
+    if request.use_llm:
+        validator = get_llm_validator(model=request.llm_model)
+        if validator.is_available:
+            # Validate low-confidence matches using sentence-based approach
+            results = validator.validate_low_confidence(
+                request.text, list(report.matches), threshold=0.85
+            )
+
+            validated_matches = []
+            for i, (match, validation) in enumerate(results):
+                llm_reasons[i] = validation.reason
+
+                if validation.is_pii:
+                    # Only add +llm suffix if actually validated by LLM (not auto-approved)
+                    was_llm_validated = "auto-approved" not in validation.reason.lower()
+                    detector_name = f"{match.detector}+llm" if was_llm_validated else match.detector
+
+                    updated_match = PIIMatch(
+                        type=match.type,
+                        text=match.text,
+                        start=match.start,
+                        end=match.end,
+                        confidence=validation.confidence,
+                        detector=detector_name,
+                    )
+                    validated_matches.append(updated_match)
+            final_matches = validated_matches
+
+    elapsed_ms = (time.perf_counter() - start_time) * 1000
+
+    # Rebuild summary for potentially filtered matches
+    by_type: dict[str, int] = {}
+    for m in final_matches:
+        by_type[m.type.value] = by_type.get(m.type.value, 0) + 1
+
     return DetectResponse(
-        matches=_build_match_schemas(report.matches),
-        summary=_build_summary(report),
-        processing_time_ms=report.processing_time_ms,
+        matches=_build_match_schemas(final_matches, llm_reasons=llm_reasons),
+        summary=SummarySchema(
+            pii_found=len(final_matches) > 0,
+            total_count=len(final_matches),
+            by_type=by_type,
+        ),
+        processing_time_ms=elapsed_ms,
     )
 
 

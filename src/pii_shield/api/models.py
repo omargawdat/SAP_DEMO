@@ -5,6 +5,7 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 StrategyType = Literal["redaction", "masking", "hashing"]
+ClaudeModelType = Literal["haiku", "sonnet", "opus"]
 
 
 class MatchInput(BaseModel):
@@ -69,6 +70,11 @@ class PIIMatchSchema(BaseModel):
         description="Whether this match needs manual review (confidence below threshold)",
         examples=[False],
     )
+    llm_reason: str | None = Field(
+        default=None,
+        description="LLM explanation for the validation (only present if use_llm=true)",
+        examples=["This is a personal email address format"],
+    )
 
     model_config = {
         "json_schema_extra": {
@@ -81,6 +87,7 @@ class PIIMatchSchema(BaseModel):
                     "confidence": 1.0,
                     "detector": "email",
                     "review_required": False,
+                    "llm_reason": None,
                 }
             ]
         }
@@ -116,12 +123,22 @@ class DetectRequest(BaseModel):
         description="Text to analyze for PII. Can be any length.",
         examples=["Contact hans@sap.com or anna@sap.de for support."],
     )
+    use_llm: bool = Field(
+        default=False,
+        description="Use LLM (Claude) to validate low-confidence detections. Requires ANTHROPIC_API_KEY.",
+        examples=[False],
+    )
+    llm_model: ClaudeModelType = Field(
+        default="haiku",
+        description="Claude model to use for LLM validation. haiku=fast/cheap, sonnet=balanced, opus=most capable.",
+        examples=["haiku"],
+    )
 
     model_config = {
         "json_schema_extra": {
             "examples": [
                 {"text": "Contact hans@sap.com for support."},
-                {"text": "My email is test@example.com and phone is +49 123 456789"},
+                {"text": "My email is test@example.com and phone is +49 123 456789", "use_llm": True, "llm_model": "sonnet"},
             ]
         }
     }

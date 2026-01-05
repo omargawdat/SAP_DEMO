@@ -89,6 +89,23 @@ class TestGermanIDDetector:
         matches = detector.detect("L1234567")
         assert len(matches) == 0
 
+    def test_no_match_pure_alphabetic_words(self):
+        """Test that pure alphabetic words are not matched as German IDs."""
+        detector = GermanIDDetector()
+        # Common German words that match the pattern but are not IDs
+        assert detector.detect("Nachricht") == []  # message
+        assert detector.detect("vornehmen") == []  # to carry out
+        assert detector.detect("Verfahren") == []  # procedure
+        assert detector.detect("Wohnungen") == []  # apartments
+        assert detector.detect("Richterin") == []  # judge (female)
+
+    def test_no_match_single_digit_only(self):
+        """Test that matches with only 1 digit are rejected."""
+        detector = GermanIDDetector()
+        # Only 1 digit - not enough to be a real ID
+        assert detector.detect("L1XXXXXXX") == []
+        assert detector.detect("MABCDEFG1") == []
+
     # === Metadata Tests ===
 
     def test_detector_name(self):
