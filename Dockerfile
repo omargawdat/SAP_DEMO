@@ -1,4 +1,4 @@
-# Stage 1: Builder
+# Stage 1: Builder (with dev deps for testing)
 FROM python:3.13-slim AS builder
 
 WORKDIR /app
@@ -9,17 +9,24 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 # Copy project files needed for installation
 COPY pyproject.toml uv.lock* README.md ./
 COPY src/ ./src/
+COPY tests/ ./tests/
 
-# Create virtual environment, install dependencies, and install the package
+# Create virtual environment, install dependencies (including dev), and install the package
 RUN uv venv /app/.venv && \
-    uv sync --frozen --no-dev && \
+    uv sync --frozen --extra dev && \
     uv pip install .
 
 # Install spaCy German medium model (good balance of accuracy and speed)
 RUN uv pip install --python /app/.venv/bin/python https://github.com/explosion/spacy-models/releases/download/de_core_news_md-3.8.0/de_core_news_md-3.8.0-py3-none-any.whl
 
-# Stage 2: Runtime
-FROM python:3.13-slim
+# Stage 2: Test (for CI - includes dev deps and tests)
+FROM builder AS test
+WORKDIR /app
+ENV PATH="/app/.venv/bin:$PATH"
+# Tests can be run on this stage with: docker run --rm image uv run pytest tests/
+
+# Stage 3: Production (slim, no dev deps)
+FROM python:3.13-slim AS production
 
 WORKDIR /app
 
