@@ -33,7 +33,6 @@ const config = {
       ({
         docs: {
           sidebarPath: './sidebars.js',
-          editUrl: 'https://github.com/omargawdat/pii-shield/tree/main/docs-site/',
         },
         blog: false,
         theme: {
