@@ -73,9 +73,7 @@ class TextProcessor:
         by_position: dict[tuple[int, int], PIIMatch] = {}
         for match in matches:
             key = (match.start, match.end)
-            if key not in by_position:
-                by_position[key] = match
-            elif match.confidence > by_position[key].confidence:
+            if key not in by_position or match.confidence > by_position[key].confidence:
                 by_position[key] = match
 
         # Sort by start position

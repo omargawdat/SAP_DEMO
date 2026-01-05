@@ -81,10 +81,7 @@ def calculate_metrics(expected: list[dict], detected: list[dict]) -> dict | None
             return True
 
         # 4. Fuzzy match for similar strings (typos, slight variations)
-        if SequenceMatcher(None, exp, det).ratio() >= 0.85:
-            return True
-
-        return False
+        return SequenceMatcher(None, exp, det).ratio() >= 0.85
 
     # Greedy 1-to-1 matching: each expected matches at most one detected
     expected_matched = [False] * len(expected)
@@ -95,12 +92,11 @@ def calculate_metrics(expected: list[dict], detected: list[dict]) -> dict | None
         for j, det in enumerate(detected):
             if detected_matched[j]:
                 continue
-            if exp["type"].upper() == det["type"].upper():
-                if texts_match(exp["text"], det["text"]):
-                    expected_matched[i] = True
-                    detected_matched[j] = True
-                    tp_pairs.append((exp["type"].upper(), normalize(exp["text"])))
-                    break
+            if exp["type"].upper() == det["type"].upper() and texts_match(exp["text"], det["text"]):
+                expected_matched[i] = True
+                detected_matched[j] = True
+                tp_pairs.append((exp["type"].upper(), normalize(exp["text"])))
+                break
 
     tp = sum(expected_matched)
     fn = len(expected) - tp
@@ -267,12 +263,11 @@ def main():
                 label_visibility="collapsed",
             )
         with col2:
-            if st.button("Load", use_container_width=True):
-                if sample_name:
-                    sample = SAMPLES[sample_name]
-                    st.session_state.input_text = sample["text"]
-                    st.session_state.expected_annotations = sample["annotations"].copy()
-                    st.rerun()
+            if st.button("Load", use_container_width=True) and sample_name:
+                sample = SAMPLES[sample_name]
+                st.session_state.input_text = sample["text"]
+                st.session_state.expected_annotations = sample["annotations"].copy()
+                st.rerun()
 
         # Text input - empty by default
         input_text = st.text_area(
@@ -333,13 +328,12 @@ def main():
                     label_visibility="collapsed",
                 )
             with col_btn:
-                if st.button("Add", key="add_annotation"):
-                    if new_text.strip():
-                        st.session_state.expected_annotations.append({
-                            "type": new_type,
-                            "text": new_text.strip(),
-                        })
-                        st.rerun()
+                if st.button("Add", key="add_annotation") and new_text.strip():
+                    st.session_state.expected_annotations.append({
+                        "type": new_type,
+                        "text": new_text.strip(),
+                    })
+                    st.rerun()
 
             # Display current annotations with delete buttons
             if st.session_state.expected_annotations:

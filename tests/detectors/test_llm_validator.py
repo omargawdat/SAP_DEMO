@@ -60,6 +60,7 @@ class TestLLMValidator:
         """Test availability check without API key."""
         validator = LLMValidator(api_key=None)
         # Without anthropic package or API key, should not be available
+        assert not validator.is_available()
 
 
 class TestSentenceExtraction:
