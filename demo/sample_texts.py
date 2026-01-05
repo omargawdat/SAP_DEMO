@@ -26,84 +26,6 @@ Bearbeitet von: Anna Schmidt""",
             {"type": "ADDRESS", "text": "Walldorf"},
         ],
     },
-    "Customer Support Email": {
-        "text": """Sehr geehrter Herr Dr. Hans Müller,
-
-vielen Dank für Ihre Anfrage bezüglich Ihres SAP-Kontos. Wir haben Ihre Nachricht erhalten und möchten Ihnen bei der Lösung Ihres Anliegens helfen.
-
-Zur Verifizierung Ihrer Identität haben wir folgende Daten in unserem System:
-
-Persönliche Daten:
-- Vollständiger Name: Dr. Hans Müller
-- Geburtsdatum: 15.03.1985
-- Anschrift: Musterstraße 42, 80331 München
-- Zweitwohnsitz: Berliner Allee 15, 10115 Berlin
-
-Kontaktdaten:
-- E-Mail (privat): hans.mueller@example.de
-- E-Mail (geschäftlich): h.mueller@sap.com
-- Mobiltelefon: +49 171 1234567
-- Festnetz: 089 987654321
-- Fax: +49 89 12345678
-
-Zahlungsinformationen:
-- IBAN (Hauptkonto): DE89370400440532013000
-- IBAN (Sparkonto): DE44500105175407324931
-- Kreditkarte (Visa): 4532015112830366
-- Kreditkarte (Mastercard): 5425233430109903
-
-Identifikationsdokumente:
-- Personalausweis-Nr.: L01X00T471
-- Reisepass-Nr.: C01X00T478
-
-Technische Daten:
-- Letzte Login-IP: 192.168.1.100
-- VPN-IP: 10.0.0.45
-
-Bitte bestätigen Sie diese Informationen, damit wir Ihr Anliegen schnellstmöglich bearbeiten können. Falls Sie Änderungen an Ihren Daten vornehmen möchten, kontaktieren Sie uns bitte unter der oben genannten Telefonnummer.
-
-Mit freundlichen Grüßen,
-Maria Schmidt
-SAP Data Protection Team
-E-Mail: m.schmidt@sap.com
-Telefon: +49 6227 7-47474
-
-Kopie an: Peter Weber (p.weber@sap.com)""",
-        "annotations": [
-            # Names
-            {"type": "NAME", "text": "Hans Müller"},
-            {"type": "NAME", "text": "Maria Schmidt"},
-            {"type": "NAME", "text": "Peter Weber"},
-            # Date of birth
-            {"type": "DATE_OF_BIRTH", "text": "15.03.1985"},
-            # Addresses
-            {"type": "ADDRESS", "text": "Musterstraße 42"},
-            {"type": "ADDRESS", "text": "München"},
-            {"type": "ADDRESS", "text": "Berliner Allee 15"},
-            {"type": "ADDRESS", "text": "Berlin"},
-            # Emails
-            {"type": "EMAIL", "text": "hans.mueller@example.de"},
-            {"type": "EMAIL", "text": "h.mueller@sap.com"},
-            {"type": "EMAIL", "text": "m.schmidt@sap.com"},
-            {"type": "EMAIL", "text": "p.weber@sap.com"},
-            # Phones
-            {"type": "PHONE", "text": "+49 171 1234567"},
-            {"type": "PHONE", "text": "089 987654321"},
-            {"type": "PHONE", "text": "+49 89 12345678"},
-            {"type": "PHONE", "text": "+49 6227 7-47474"},
-            # IBANs
-            {"type": "IBAN", "text": "DE89370400440532013000"},
-            {"type": "IBAN", "text": "DE44500105175407324931"},
-            # Credit Cards
-            {"type": "CREDIT_CARD", "text": "4532015112830366"},
-            {"type": "CREDIT_CARD", "text": "5425233430109903"},
-            # German IDs
-            {"type": "GERMAN_ID", "text": "L01X00T471"},
-            # IP Addresses
-            {"type": "IP_ADDRESS", "text": "192.168.1.100"},
-            {"type": "IP_ADDRESS", "text": "10.0.0.45"},
-        ],
-    },
     "HR Employee Record": {
         "text": """PERSONALAKTE - STRENG VERTRAULICH
 
@@ -111,7 +33,7 @@ Dokumenten-ID: HR-2024-00815
 Erstellungsdatum: 01.01.2024
 Letzte Aktualisierung: 15.06.2024
 Abteilung: EDT Data Protection
-Standort: Walldorf, Deutschland
+Standort: Ratingen, DE, 40882
 
 ═══════════════════════════════════════════════════════════════════════════════
 
@@ -272,4 +194,4 @@ Letzte Prüfung durch: Datenschutzbeauftragter Thomas Müller (t.mueller@sap.com
     },
 }
 
-DEFAULT_SAMPLE = "Customer Support Email"
+DEFAULT_SAMPLE = "HR Employee Record"

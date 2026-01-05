@@ -366,15 +366,18 @@ def main():
         # Handle analyze button click
         if analyze_clicked:
             if input_text.strip():
-                spinner_text = "Detecting PII with LLM validation..." if use_llm else "Detecting PII..."
-                with st.spinner(spinner_text):
+                status_label = "🤖 AI Processing..." if use_llm else "🔍 Analyzing..."
+                with st.status(status_label, expanded=True) as status:
+                    st.write("🔍 Scanning text for PII patterns...")
                     payload = {"text": input_text, "use_llm": use_llm}
                     if use_llm:
                         payload["llm_model"] = st.session_state.get("llm_model", "haiku")
                         payload["llm_threshold"] = st.session_state.get("llm_threshold", 0.90)
+                        st.write("🧠 Validating detections with LLM...")
                     response, request_info = call_api("detect", payload)
 
                     if response:
+                        st.write("✨ Processing results...")
                         st.session_state.detect_response = response
                         st.session_state.detect_request = request_info
                         # High confidence = True (auto-approved), Low confidence = None (user must decide)
@@ -384,8 +387,11 @@ def main():
                             i: True if m["confidence"] >= threshold else None
                             for i, m in enumerate(matches)
                         }
+                        status.update(label="✅ Analysis complete!", state="complete", expanded=False)
                         st.session_state.workflow_step = 2
                         st.rerun()
+                    else:
+                        status.update(label="❌ Analysis failed", state="error", expanded=False)
             else:
                 st.warning("Please enter some text to analyze.")
 
