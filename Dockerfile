@@ -15,9 +15,8 @@ RUN uv venv /app/.venv && \
     uv sync --frozen --no-dev && \
     uv pip install .
 
-# Install pip and download spaCy German model
-RUN /app/.venv/bin/python -m ensurepip && \
-    /app/.venv/bin/python -m spacy download de_core_news_sm
+# Install spaCy German medium model (good balance of accuracy and speed)
+RUN uv pip install --python /app/.venv/bin/python https://github.com/explosion/spacy-models/releases/download/de_core_news_md-3.8.0/de_core_news_md-3.8.0-py3-none-any.whl
 
 # Stage 2: Runtime
 FROM python:3.13-slim

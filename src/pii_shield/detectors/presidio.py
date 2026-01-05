@@ -55,11 +55,14 @@ class PresidioDetector(Detector):
         if not PRESIDIO_AVAILABLE:
             return
 
+        # Medium model: good balance of accuracy and speed (46MB vs 560MB for large)
+        model_name = f"{language}_core_news_md"
+
         try:
             # Configure spaCy NLP engine
             configuration = {
                 "nlp_engine_name": "spacy",
-                "models": [{"lang_code": language, "model_name": f"{language}_core_news_sm"}],
+                "models": [{"lang_code": language, "model_name": model_name}],
             }
 
             provider = NlpEngineProvider(nlp_configuration=configuration)

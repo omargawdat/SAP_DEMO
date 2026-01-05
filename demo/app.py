@@ -1,5 +1,6 @@
 """PII Shield - Interactive Demo Application with Human-in-the-Loop Workflow."""
 
+import logging
 import os
 
 import pandas as pd
@@ -8,8 +9,14 @@ import requests
 import streamlit as st
 
 from demo.components import build_highlighted_html
-from demo.sample_texts import DEFAULT_SAMPLE, SAMPLES
+from demo.sample_texts import SAMPLES
 from demo.styles import PII_COLORS, PII_ICONS, inject_custom_css
+
+# Configure logging to show LLM prompts/responses
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
 
 # Configuration
 API_URL = os.getenv("API_URL", "http://localhost:8000")
@@ -37,6 +44,95 @@ st.set_page_config(
 
 # Inject custom styles
 inject_custom_css()
+
+
+def calculate_metrics(expected: list[dict], detected: list[dict]) -> dict | None:
+    """Calculate Precision, Recall, F1 with smart text matching.
+
+    Matching strategies (in order):
+    1. Exact match (case-insensitive)
+    2. Containment: expected in detected or vice versa (with length ratio check)
+    3. Fuzzy match: 85%+ similarity for typos/variations
+    """
+    if not expected:
+        return None
+
+    from difflib import SequenceMatcher
+
+    def normalize(text: str) -> str:
+        return text.lower().strip()
+
+    def texts_match(exp_text: str, det_text: str) -> bool:
+        """Check if texts match using multiple strategies."""
+        exp = normalize(exp_text)
+        det = normalize(det_text)
+
+        # 1. Exact match
+        if exp == det:
+            return True
+
+        # 2. Containment: expected in detected (e.g., "Hans Müller" in "Dr. Hans Müller")
+        #    But detected shouldn't be too much longer (max 1.5x length)
+        if exp in det and len(det) <= len(exp) * 1.5:
+            return True
+
+        # 3. Containment: detected in expected (e.g., "München" in "80331 München")
+        if det in exp and len(exp) <= len(det) * 1.5:
+            return True
+
+        # 4. Fuzzy match for similar strings (typos, slight variations)
+        if SequenceMatcher(None, exp, det).ratio() >= 0.85:
+            return True
+
+        return False
+
+    # Greedy 1-to-1 matching: each expected matches at most one detected
+    expected_matched = [False] * len(expected)
+    detected_matched = [False] * len(detected)
+    tp_pairs = []
+
+    for i, exp in enumerate(expected):
+        for j, det in enumerate(detected):
+            if detected_matched[j]:
+                continue
+            if exp["type"].upper() == det["type"].upper():
+                if texts_match(exp["text"], det["text"]):
+                    expected_matched[i] = True
+                    detected_matched[j] = True
+                    tp_pairs.append((exp["type"].upper(), normalize(exp["text"])))
+                    break
+
+    tp = sum(expected_matched)
+    fn = len(expected) - tp
+    fp = len(detected) - sum(detected_matched)
+
+    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
+
+    # Build detail lists
+    fp_details = [
+        (det["type"].upper(), normalize(det["text"]))
+        for j, det in enumerate(detected)
+        if not detected_matched[j]
+    ]
+    fn_details = [
+        (exp["type"].upper(), normalize(exp["text"]))
+        for i, exp in enumerate(expected)
+        if not expected_matched[i]
+    ]
+
+    return {
+        "tp": tp,
+        "fp": fp,
+        "fn": fn,
+        "precision": precision,
+        "recall": recall,
+        "f1": f1,
+        "tp_details": tp_pairs,
+        "fp_details": fp_details,
+        "fn_details": fn_details,
+    }
 
 
 def call_api(endpoint: str, payload: dict) -> tuple[dict | None, dict]:
@@ -130,6 +226,7 @@ def reset_workflow() -> None:
         "anonymize_response",
         "anonymize_request",
         "match_selections",
+        "expected_annotations",
     ]
     for key in keys_to_clear:
         if key in st.session_state:
@@ -159,10 +256,28 @@ def main():
 
     # ============== STEP 1: INPUT & DETECTION ==============
     if st.session_state.workflow_step == 1:
-        # Text input first - most prominent
+        # Sample loader at the top
+        col1, col2 = st.columns([4, 1])
+        with col1:
+            sample_name = st.selectbox(
+                "Load sample text:",
+                options=list(SAMPLES.keys()),
+                index=None,
+                placeholder="Select a sample to load...",
+                label_visibility="collapsed",
+            )
+        with col2:
+            if st.button("Load", use_container_width=True):
+                if sample_name:
+                    sample = SAMPLES[sample_name]
+                    st.session_state.input_text = sample["text"]
+                    st.session_state.expected_annotations = sample["annotations"].copy()
+                    st.rerun()
+
+        # Text input - empty by default
         input_text = st.text_area(
             "Enter text containing PII:",
-            value=st.session_state.get("input_text", SAMPLES[DEFAULT_SAMPLE]),
+            value=st.session_state.get("input_text", ""),
             height=250,
             placeholder="Paste German text containing personal information...",
         )
@@ -182,27 +297,71 @@ def main():
         st.session_state.use_llm = use_llm
         if use_llm:
             st.session_state.llm_model = llm_selection.lower()
-
-        # Analyze button - immediately after text input
-        analyze_clicked = st.button("🔍 Analyze Text", type="primary", use_container_width=True)
-
-        # Sample selector as secondary option
-        st.markdown(
-            "<div style='text-align: center; color: #666; margin: 20px 0 10px 0;'>— or load a sample —</div>",
-            unsafe_allow_html=True,
-        )
-        col1, col2 = st.columns([4, 1])
-        with col1:
-            sample_name = st.selectbox(
-                "Sample texts:",
-                options=list(SAMPLES.keys()),
-                index=list(SAMPLES.keys()).index(DEFAULT_SAMPLE),
-                label_visibility="collapsed",
+            # LLM threshold slider (only shown when LLM is selected)
+            llm_threshold_pct = st.slider(
+                "LLM Threshold (send detections ≤ this to LLM)",
+                min_value=50,
+                max_value=100,
+                value=int(st.session_state.get("llm_threshold", 0.90) * 100),
+                step=1,
+                format="%d%%",
+                help="Detections with confidence ≤ this value are validated by LLM. Higher = more LLM calls.",
             )
-        with col2:
-            if st.button("Load", use_container_width=True):
-                st.session_state.input_text = SAMPLES[sample_name]
-                st.rerun()
+            st.session_state.llm_threshold = llm_threshold_pct / 100.0
+
+        # Expected annotations section (for ML metrics)
+        with st.expander("📊 Expected PII Annotations (Optional)", expanded=False):
+            st.caption("Mark expected PII to calculate Precision/Recall/F1 metrics")
+
+            if "expected_annotations" not in st.session_state:
+                st.session_state.expected_annotations = []
+
+            # Add new annotation form
+            col_type, col_text, col_btn = st.columns([2, 4, 1])
+            with col_type:
+                new_type = st.selectbox(
+                    "Type",
+                    options=list(PII_COLORS.keys()),
+                    key="new_annotation_type",
+                    label_visibility="collapsed",
+                )
+            with col_text:
+                new_text = st.text_input(
+                    "Text",
+                    key="new_annotation_text",
+                    placeholder="Enter expected PII text...",
+                    label_visibility="collapsed",
+                )
+            with col_btn:
+                if st.button("Add", key="add_annotation"):
+                    if new_text.strip():
+                        st.session_state.expected_annotations.append({
+                            "type": new_type,
+                            "text": new_text.strip(),
+                        })
+                        st.rerun()
+
+            # Display current annotations with delete buttons
+            if st.session_state.expected_annotations:
+                st.markdown("**Current Annotations:**")
+                for i, ann in enumerate(st.session_state.expected_annotations):
+                    col1, col2 = st.columns([6, 1])
+                    with col1:
+                        color = PII_COLORS.get(ann["type"], "#888")
+                        icon = PII_ICONS.get(ann["type"], "")
+                        st.markdown(
+                            f"<span style='color:{color};'>{icon} {ann['type']}</span>: `{ann['text']}`",
+                            unsafe_allow_html=True,
+                        )
+                    with col2:
+                        if st.button("✕", key=f"del_ann_{i}"):
+                            st.session_state.expected_annotations.pop(i)
+                            st.rerun()
+            else:
+                st.info("No annotations added. Detection will proceed without metrics calculation.")
+
+        # Analyze button
+        analyze_clicked = st.button("🔍 Analyze Text", type="primary", use_container_width=True)
 
         # Handle analyze button click
         if analyze_clicked:
@@ -212,6 +371,7 @@ def main():
                     payload = {"text": input_text, "use_llm": use_llm}
                     if use_llm:
                         payload["llm_model"] = st.session_state.get("llm_model", "haiku")
+                        payload["llm_threshold"] = st.session_state.get("llm_threshold", 0.90)
                     response, request_info = call_api("detect", payload)
 
                     if response:
@@ -545,6 +705,70 @@ def main():
             st.metric("User Confirmed", user_confirmed, help="Reviewed and marked as PII")
         with metric_col3:
             st.metric("User Rejected", user_rejected, help="False positives caught by human review")
+
+        # ---- SECTION 4.5: ML Performance Metrics ----
+        expected_annotations = st.session_state.get("expected_annotations", [])
+        if expected_annotations:
+            st.divider()
+            st.markdown("#### ML Performance Metrics")
+
+            # Get approved matches only (high confidence + user confirmed)
+            approved_matches = [
+                m for i, m in enumerate(matches)
+                if m["confidence"] >= threshold or match_selections.get(i) is True
+            ]
+
+            metrics = calculate_metrics(expected_annotations, approved_matches)
+
+            if metrics:
+                # Metrics row
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric(
+                        "Precision",
+                        f"{metrics['precision']:.1%}",
+                        help="Of detected PII, how much was expected?",
+                    )
+                with col2:
+                    st.metric(
+                        "Recall",
+                        f"{metrics['recall']:.1%}",
+                        help="Of expected PII, how much was detected?",
+                    )
+                with col3:
+                    st.metric(
+                        "F1 Score",
+                        f"{metrics['f1']:.1%}",
+                        help="Harmonic mean of Precision and Recall",
+                    )
+
+                # Confusion counts
+                st.markdown(
+                    f"<div style='background: #1a1a2e; padding: 12px; border-radius: 8px; margin: 10px 0;'>"
+                    f"<span style='color: #4CAF50;'>TP: {metrics['tp']}</span> | "
+                    f"<span style='color: #FFC107;'>FP: {metrics['fp']}</span> | "
+                    f"<span style='color: #F44336;'>FN: {metrics['fn']}</span>"
+                    f"</div>",
+                    unsafe_allow_html=True,
+                )
+
+                # Detailed breakdown in expander (only show errors)
+                with st.expander("Breakdown Details", expanded=True):
+                    # False Positives (wrong detections) - Yellow/Orange
+                    if metrics["fp_details"]:
+                        st.markdown("<span style='color: #FFC107; font-weight: bold;'>False Positives (Wrong Detections):</span>", unsafe_allow_html=True)
+                        for pii_type, text in metrics["fp_details"]:
+                            st.markdown(f"<span style='color: #FFC107;'>- {pii_type}: `{text}`</span>", unsafe_allow_html=True)
+
+                    # False Negatives (missed) - Red
+                    if metrics["fn_details"]:
+                        st.markdown("<span style='color: #F44336; font-weight: bold;'>False Negatives (Missed):</span>", unsafe_allow_html=True)
+                        for pii_type, text in metrics["fn_details"]:
+                            st.markdown(f"<span style='color: #F44336;'>- {pii_type}: `{text}`</span>", unsafe_allow_html=True)
+
+                    # Show success message if no errors
+                    if not metrics["fp_details"] and not metrics["fn_details"]:
+                        st.markdown("<span style='color: #4CAF50;'>✓ All detections correct!</span>", unsafe_allow_html=True)
 
         # ---- SECTION 5: Detection Details with Explainability ----
         with st.expander("📋 Detection Details", expanded=True):

@@ -19,8 +19,9 @@ class GermanIDDetector(Detector):
 
     # Pattern: Letter followed by 8 alphanumeric chars, optionally followed by check digit
     # Valid first letters for German ID
+    # Negative lookbehind/ahead to avoid matching inside email addresses
     PATTERN = re.compile(
-        r"\b([LMNPRTVWXY][A-Z0-9]{8})(\d)?\b",
+        r"(?<![.@])(?<![a-z])\b([LMNPRTVWXY][A-Z0-9]{8})(\d)?\b(?![.@])",
         re.IGNORECASE,
     )
 

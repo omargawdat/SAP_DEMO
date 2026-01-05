@@ -34,14 +34,15 @@ class PhoneDetector(Detector):
             [\s\-./]?                     # Optional separator
             \(?(\d{2,4})\)?               # Area/mobile code (capture group 1)
             [\s\-./]?                     # Optional separator
-            (\d{3,8})                     # Subscriber number part 1 (capture group 2)
-            (?:[\s\-./]?(\d{1,8}))?       # Optional part 2 (capture group 3)
+            (\d{1,8})                     # Subscriber number part 1 (capture group 2)
+            (?:[\s\-./](\d{1,8}))?        # Optional part 2 with separator (capture group 3)
+            (?:[\s\-./]?(\d{1,8}))?       # Optional part 3 (capture group 4)
         |
             \(?0                          # National prefix (with optional opening paren)
-            (\d{2,5})\)?                  # Area/mobile code (capture group 4)
+            (\d{2,5})\)?                  # Area/mobile code (capture group 5)
             [\s\-./]?                     # Optional separator
-            (\d{3,8})                     # Subscriber number part 1 (capture group 5)
-            (?:[\s\-./]?(\d{1,8}))?       # Optional part 2 (capture group 6)
+            (\d{3,8})                     # Subscriber number part 1 (capture group 6)
+            (?:[\s\-./]?(\d{1,8}))?       # Optional part 2 (capture group 7)
         )
         (?!\d)                            # Not followed by digit
         """,
@@ -77,6 +78,11 @@ class PhoneDetector(Detector):
         """Calculate confidence score based on phone number format."""
         matched_text = match.group()
 
+        # Count total digits to ensure minimum length
+        digit_count = sum(c.isdigit() for c in matched_text)
+        if digit_count < 10:  # German numbers need at least 10 digits (including country code)
+            return 0.5  # Low confidence for short numbers
+
         # International format with +49 is highest confidence
         if matched_text.startswith("+49"):
             return 1.0
@@ -85,8 +91,8 @@ class PhoneDetector(Detector):
         if matched_text.startswith("0049"):
             return 1.0
 
-        # Extract area code from national format
-        area_code = match.group(4)  # National format area code
+        # Extract area code from national format (group 5 after pattern update)
+        area_code = match.group(5)
         if area_code:
             # Known mobile prefix
             if area_code.lstrip("0") in self.MOBILE_PREFIXES:

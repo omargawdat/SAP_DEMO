@@ -63,8 +63,8 @@ STRATEGIES = {
     "masking": MaskingStrategy(),  # han***com - partial visibility
 }
 
-# Default confidence threshold for review_required flag
-REVIEW_CONFIDENCE_THRESHOLD = 0.85
+# Default confidence threshold for review_required flag and LLM validation
+REVIEW_CONFIDENCE_THRESHOLD = 0.90
 
 
 def _build_match_schemas(
@@ -141,7 +141,7 @@ async def detect_pii(request: DetectRequest) -> DetectResponse:
         if validator.is_available:
             # Validate low-confidence matches using sentence-based approach
             results = validator.validate_low_confidence(
-                request.text, list(report.matches), threshold=0.85
+                request.text, list(report.matches), threshold=request.llm_threshold
             )
 
             validated_matches = []

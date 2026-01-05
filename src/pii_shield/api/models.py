@@ -133,12 +133,19 @@ class DetectRequest(BaseModel):
         description="Claude model to use for LLM validation. haiku=fast/cheap, sonnet=balanced, opus=most capable.",
         examples=["haiku"],
     )
+    llm_threshold: float = Field(
+        default=0.90,
+        ge=0.0,
+        le=1.0,
+        description="Confidence threshold for LLM validation. Detections with confidence <= this value are sent to LLM.",
+        examples=[0.90],
+    )
 
     model_config = {
         "json_schema_extra": {
             "examples": [
                 {"text": "Contact hans@sap.com for support."},
-                {"text": "My email is test@example.com and phone is +49 123 456789", "use_llm": True, "llm_model": "sonnet"},
+                {"text": "My email is test@example.com and phone is +49 123 456789", "use_llm": True, "llm_model": "sonnet", "llm_threshold": 0.90},
             ]
         }
     }

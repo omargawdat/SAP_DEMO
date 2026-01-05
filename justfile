@@ -46,9 +46,9 @@ setup-hooks:
 pre-commit:
     uv run pre-commit run --all-files
 
-# Download spaCy German model
+# Download spaCy German medium model (good balance of accuracy and speed)
 download-model:
-    uv run python -m spacy download de_core_news_sm
+    uv pip install https://github.com/explosion/spacy-models/releases/download/de_core_news_md-3.8.0/de_core_news_md-3.8.0-py3-none-any.whl
 
 # Run the API server
 serve:
