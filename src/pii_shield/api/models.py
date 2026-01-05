@@ -75,6 +75,21 @@ class PIIMatchSchema(BaseModel):
         description="LLM explanation for the validation (only present if use_llm=true)",
         examples=["This is a personal email address format"],
     )
+    original_confidence: float | None = Field(
+        default=None,
+        description="Original confidence before LLM validation (only present if use_llm=true)",
+        examples=[0.65],
+    )
+    llm_validated: bool = Field(
+        default=False,
+        description="Whether this match was validated by LLM",
+        examples=[True],
+    )
+    llm_rejected: bool = Field(
+        default=False,
+        description="Whether LLM rejected this match as not being PII (false positive)",
+        examples=[False],
+    )
 
     model_config = {
         "json_schema_extra": {
@@ -88,6 +103,9 @@ class PIIMatchSchema(BaseModel):
                     "detector": "email",
                     "review_required": False,
                     "llm_reason": None,
+                    "original_confidence": None,
+                    "llm_validated": False,
+                    "llm_rejected": False,
                 }
             ]
         }
@@ -145,7 +163,12 @@ class DetectRequest(BaseModel):
         "json_schema_extra": {
             "examples": [
                 {"text": "Contact hans@sap.com for support."},
-                {"text": "My email is test@example.com and phone is +49 123 456789", "use_llm": True, "llm_model": "sonnet", "llm_threshold": 0.90},
+                {
+                    "text": "My email is test@example.com and phone is +49 123 456789",
+                    "use_llm": True,
+                    "llm_model": "sonnet",
+                    "llm_threshold": 0.90,
+                },
             ]
         }
     }

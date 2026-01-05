@@ -1001,11 +1001,15 @@ source = { editable = "." }
 dependencies = [
     { name = "anthropic" },
     { name = "fastapi" },
+    { name = "pandas" },
+    { name = "plotly" },
     { name = "presidio-analyzer" },
     { name = "presidio-anonymizer" },
     { name = "pydantic" },
     { name = "python-dotenv" },
+    { name = "requests" },
     { name = "spacy" },
+    { name = "streamlit" },
     { name = "uvicorn" },
 ]
 
@@ -1034,7 +1038,9 @@ requires-dist = [
     { name = "delta-spark", marker = "extra == 'databricks'", specifier = ">=3.2" },
     { name = "fastapi", specifier = ">=0.115" },
     { name = "httpx", marker = "extra == 'dev'", specifier = ">=0.28" },
+    { name = "pandas", specifier = ">=2.1" },
     { name = "pandas", marker = "extra == 'demo'", specifier = ">=2.1" },
+    { name = "plotly", specifier = ">=5.18" },
     { name = "plotly", marker = "extra == 'demo'", specifier = ">=5.18" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=4.0" },
     { name = "presidio-analyzer", specifier = ">=2.2" },
@@ -1044,9 +1050,11 @@ requires-dist = [
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=6.0" },
     { name = "python-dotenv", specifier = ">=1.0" },
+    { name = "requests", specifier = ">=2.31" },
     { name = "requests", marker = "extra == 'demo'", specifier = ">=2.31" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.8" },
     { name = "spacy", specifier = ">=3.7" },
+    { name = "streamlit", specifier = ">=1.40" },
     { name = "streamlit", marker = "extra == 'demo'", specifier = ">=1.40" },
     { name = "uvicorn", specifier = ">=0.32" },
 ]

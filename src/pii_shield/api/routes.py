@@ -43,6 +43,7 @@ def get_llm_validator(model: str = "haiku") -> LLMValidator:
         _llm_validators[model] = LLMValidator(model=model)
     return _llm_validators[model]
 
+
 # Available detectors
 DETECTORS = [
     # Rule-based detectors (fast, high precision)
@@ -71,9 +72,15 @@ def _build_match_schemas(
     matches: list,
     confidence_threshold: float = REVIEW_CONFIDENCE_THRESHOLD,
     llm_reasons: dict[int, str] | None = None,
+    original_confidences: dict[int, float] | None = None,
+    llm_validated_indices: set[int] | None = None,
+    llm_rejected_indices: set[int] | None = None,
 ) -> list[PIIMatchSchema]:
     """Convert PIIMatch objects to Pydantic schemas."""
     llm_reasons = llm_reasons or {}
+    original_confidences = original_confidences or {}
+    llm_validated_indices = llm_validated_indices or set()
+    llm_rejected_indices = llm_rejected_indices or set()
     return [
         PIIMatchSchema(
             type=m.type.value,
@@ -82,8 +89,11 @@ def _build_match_schemas(
             end=m.end,
             confidence=m.confidence,
             detector=m.detector,
-            review_required=m.confidence < confidence_threshold,
+            review_required=m.confidence < confidence_threshold and i not in llm_rejected_indices,
             llm_reason=llm_reasons.get(i),
+            original_confidence=original_confidences.get(i),
+            llm_validated=i in llm_validated_indices,
+            llm_rejected=i in llm_rejected_indices,
         )
         for i, m in enumerate(matches)
     ]
@@ -133,26 +143,38 @@ async def detect_pii(request: DetectRequest) -> DetectResponse:
     report = processor.process(request.text)
 
     llm_reasons: dict[int, str] = {}
+    original_confidences: dict[int, float] = {}
+    llm_validated_indices: set[int] = set()
+    llm_rejected_indices: set[int] = set()
     final_matches = list(report.matches)
 
     # Apply LLM validation if requested (sentence-based batching)
     if request.use_llm:
         validator = get_llm_validator(model=request.llm_model)
         if validator.is_available:
+            # Store original confidences before LLM validation
+            original_match_confidences = {i: m.confidence for i, m in enumerate(report.matches)}
+
             # Validate low-confidence matches using sentence-based approach
             results = validator.validate_low_confidence(
                 request.text, list(report.matches), threshold=request.llm_threshold
             )
 
-            validated_matches = []
+            all_matches = []
             for i, (match, validation) in enumerate(results):
+                # Store original confidence
+                original_confidences[i] = original_match_confidences.get(i, match.confidence)
                 llm_reasons[i] = validation.reason
 
-                if validation.is_pii:
-                    # Only add +llm suffix if actually validated by LLM (not auto-approved)
-                    was_llm_validated = "auto-approved" not in validation.reason.lower()
-                    detector_name = f"{match.detector}+llm" if was_llm_validated else match.detector
+                # Check if LLM actually validated (not auto-approved)
+                was_llm_validated = "auto-approved" not in validation.reason.lower()
 
+                if validation.is_pii:
+                    # Match confirmed as PII
+                    if was_llm_validated:
+                        llm_validated_indices.add(i)
+
+                    detector_name = f"{match.detector}+llm" if was_llm_validated else match.detector
                     updated_match = PIIMatch(
                         type=match.type,
                         text=match.text,
@@ -161,21 +183,45 @@ async def detect_pii(request: DetectRequest) -> DetectResponse:
                         confidence=validation.confidence,
                         detector=detector_name,
                     )
-                    validated_matches.append(updated_match)
-            final_matches = validated_matches
+                    all_matches.append(updated_match)
+                else:
+                    # Match rejected by LLM - keep it but mark as rejected
+                    llm_validated_indices.add(i)
+                    llm_rejected_indices.add(i)
+
+                    rejected_match = PIIMatch(
+                        type=match.type,
+                        text=match.text,
+                        start=match.start,
+                        end=match.end,
+                        confidence=0.0,  # Set to 0 since rejected
+                        detector=f"{match.detector}+llm",
+                    )
+                    all_matches.append(rejected_match)
+
+            final_matches = all_matches
 
     elapsed_ms = (time.perf_counter() - start_time) * 1000
 
-    # Rebuild summary for potentially filtered matches
+    # Rebuild summary for non-rejected matches only
     by_type: dict[str, int] = {}
-    for m in final_matches:
-        by_type[m.type.value] = by_type.get(m.type.value, 0) + 1
+    non_rejected_count = 0
+    for i, m in enumerate(final_matches):
+        if i not in llm_rejected_indices:
+            by_type[m.type.value] = by_type.get(m.type.value, 0) + 1
+            non_rejected_count += 1
 
     return DetectResponse(
-        matches=_build_match_schemas(final_matches, llm_reasons=llm_reasons),
+        matches=_build_match_schemas(
+            final_matches,
+            llm_reasons=llm_reasons,
+            original_confidences=original_confidences,
+            llm_validated_indices=llm_validated_indices,
+            llm_rejected_indices=llm_rejected_indices,
+        ),
         summary=SummarySchema(
-            pii_found=len(final_matches) > 0,
-            total_count=len(final_matches),
+            pii_found=non_rejected_count > 0,
+            total_count=non_rejected_count,
             by_type=by_type,
         ),
         processing_time_ms=elapsed_ms,
@@ -208,9 +254,7 @@ For one-shot detection + anonymization, use `/process` instead.
             "description": "Unknown strategy specified",
             "content": {
                 "application/json": {
-                    "example": {
-                        "detail": "Unknown strategy: invalid. Available: ['redaction']"
-                    }
+                    "example": {"detail": "Unknown strategy: invalid. Available: ['redaction']"}
                 }
             },
         }
@@ -291,9 +335,7 @@ For manual review workflow, use `/detect` + `/anonymize` instead.
             "description": "Unknown strategy specified",
             "content": {
                 "application/json": {
-                    "example": {
-                        "detail": "Unknown strategy: invalid. Available: ['redaction']"
-                    }
+                    "example": {"detail": "Unknown strategy: invalid. Available: ['redaction']"}
                 }
             },
         }
@@ -315,9 +357,7 @@ async def process_text(request: ProcessRequest) -> ProcessResponse:
     report = processor.process(request.text)
 
     # Filter matches by confidence threshold
-    filtered_matches = [
-        m for m in report.matches if m.confidence >= request.min_confidence
-    ]
+    filtered_matches = [m for m in report.matches if m.confidence >= request.min_confidence]
 
     # Apply strategy to filtered matches
     if filtered_matches:

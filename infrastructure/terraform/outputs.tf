@@ -6,7 +6,7 @@ output "api_url" {
 
 output "api_docs_url" {
   description = "API documentation (Swagger UI)"
-  value       = "https://${aws_apprunner_service.api.service_url}/api/v1/docs"
+  value       = "https://${aws_apprunner_service.api.service_url}/docs"
 }
 
 output "health_check_url" {

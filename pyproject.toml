@@ -24,6 +24,11 @@ dependencies = [
     "uvicorn>=0.32",
     "anthropic>=0.40.0",
     "python-dotenv>=1.0",
+    # Demo UI dependencies (needed for Streamlit Cloud)
+    "streamlit>=1.40",
+    "requests>=2.31",
+    "plotly>=5.18",
+    "pandas>=2.1",
 ]
 
 [project.optional-dependencies]

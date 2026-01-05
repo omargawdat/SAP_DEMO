@@ -42,8 +42,5 @@ justfile
 docs/
 notebooks/
 
-# Tests (not needed in production image)
-tests/
-
 # Claude/AI
 .claude/

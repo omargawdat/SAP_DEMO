@@ -49,5 +49,8 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker tag pii-shield-api:prod "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          docker tag pii-shield-api:prod "$ECR_REGISTRY/$ECR_REPOSITORY:latest"
           docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:latest"
           echo "Docker image pushed to: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          echo "Docker image pushed to: $ECR_REGISTRY/$ECR_REPOSITORY:latest"

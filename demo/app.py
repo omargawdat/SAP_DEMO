@@ -1,5 +1,11 @@
 """PII Shield - Interactive Demo Application with Human-in-the-Loop Workflow."""
 
+import sys
+from pathlib import Path
+
+# Add parent directory to path for Streamlit Cloud compatibility
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 import logging
 import os
 
@@ -177,14 +183,14 @@ def render_step_indicator(current_step: int) -> None:
         bg, border, text = get_step_style(i + 1)
         checkmark = "✓" if i + 1 < current_step else num
 
-        html += f'''
+        html += f"""
         <div style="display: flex; align-items: center;">
             <div style="width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px; background-color: {bg}; border: 2px solid {border}; color: {text};">
                 {checkmark}
             </div>
             <span style="margin-left: 6px; font-size: 13px; font-weight: 500; color: {text};">{label}</span>
         </div>
-        '''
+        """
 
         # Add connecting line (except after last step)
         if i < len(steps) - 1:
@@ -238,7 +244,10 @@ def main():
     with col_title:
         st.markdown("### SAP PII SHIELD")
     with col_name:
-        st.markdown("<div style='text-align: right; padding-top: 8px;'><b>Omar Mohamed</b></div>", unsafe_allow_html=True)
+        st.markdown(
+            "<div style='text-align: right; padding-top: 8px;'><b>Omar Mohamed</b></div>",
+            unsafe_allow_html=True,
+        )
 
     st.divider()
 
@@ -329,10 +338,12 @@ def main():
                 )
             with col_btn:
                 if st.button("Add", key="add_annotation") and new_text.strip():
-                    st.session_state.expected_annotations.append({
-                        "type": new_type,
-                        "text": new_text.strip(),
-                    })
+                    st.session_state.expected_annotations.append(
+                        {
+                            "type": new_type,
+                            "text": new_text.strip(),
+                        }
+                    )
                     st.rerun()
 
             # Display current annotations with delete buttons
@@ -376,12 +387,16 @@ def main():
                         st.session_state.detect_request = request_info
                         # High confidence = True (auto-approved), Low confidence = None (user must decide)
                         matches = response.get("matches", [])
-                        threshold = st.session_state.get("confidence_threshold", DEFAULT_CONFIDENCE_THRESHOLD)
+                        threshold = st.session_state.get(
+                            "confidence_threshold", DEFAULT_CONFIDENCE_THRESHOLD
+                        )
                         st.session_state.match_selections = {
                             i: True if m["confidence"] >= threshold else None
                             for i, m in enumerate(matches)
                         }
-                        status.update(label="✅ Analysis complete!", state="complete", expanded=False)
+                        status.update(
+                            label="✅ Analysis complete!", state="complete", expanded=False
+                        )
                         st.session_state.workflow_step = 2
                         st.rerun()
                     else:
@@ -392,7 +407,10 @@ def main():
     # ============== STEP 2: REVIEW & APPROVE ==============
     elif st.session_state.workflow_step == 2:
         # Scroll to top when entering this step
-        st.markdown("<script>window.parent.document.querySelector('section.main').scrollTo(0, 0);</script>", unsafe_allow_html=True)
+        st.markdown(
+            "<script>window.parent.document.querySelector('section.main').scrollTo(0, 0);</script>",
+            unsafe_allow_html=True,
+        )
         st.subheader("Step 2: Review & Approve Matches")
 
         detect_response = st.session_state.detect_response
@@ -437,13 +455,125 @@ def main():
                 st.metric("High Confidence", high_conf)
             with col3:
                 needs_review = sum(1 for m in matches if m["confidence"] < confidence_threshold)
-                st.metric("Needs Review", needs_review, help=f"Confidence < {confidence_threshold:.0%}")
+                st.metric(
+                    "Needs Review", needs_review, help=f"Confidence < {confidence_threshold:.0%}"
+                )
 
             st.divider()
 
-            # Split matches by confidence
-            high_conf_matches = [(i, m) for i, m in enumerate(matches) if m["confidence"] >= confidence_threshold]
-            review_matches = [(i, m) for i, m in enumerate(matches) if m["confidence"] < confidence_threshold]
+            # LLM Validation Comparison Table (only show when LLM was used)
+            if st.session_state.get("use_llm", False):
+                llm_validated_matches = [m for m in matches if m.get("llm_validated", False)]
+                if llm_validated_matches:
+                    with st.expander("🤖 LLM Validation Results", expanded=True):
+                        # Build comparison data - only include matches where status changed
+                        comparison_data = []
+                        for m in matches:
+                            if m.get("original_confidence") is not None:
+                                orig_conf = m["original_confidence"]
+                                new_conf = m["confidence"]
+                                is_rejected = m.get("llm_rejected", False)
+                                is_skipped = "auto-approved" in m.get("llm_reason", "").lower()
+
+                                # Skip if no change (before == after and not rejected)
+                                if (
+                                    not is_rejected
+                                    and not is_skipped
+                                    and abs(new_conf - orig_conf) < 0.001
+                                ):
+                                    continue
+
+                                # Skip auto-approved/skipped items (no LLM action taken)
+                                if is_skipped:
+                                    continue
+
+                                # Determine status and change
+                                if is_rejected:
+                                    status = "❌ Rejected"
+                                    change = "False positive"
+                                    sort_order = 0  # Rejected first
+                                else:
+                                    diff = (new_conf - orig_conf) * 100
+                                    if diff > 0:
+                                        status = "✓ Validated"
+                                        change = f"+{diff:.0f}%"
+                                    elif diff < 0:
+                                        status = "✓ Validated"
+                                        change = f"{diff:.0f}%"
+                                    else:
+                                        status = "✓ Validated"
+                                        change = "="
+                                    sort_order = 1  # Validated after rejected
+
+                                comparison_data.append(
+                                    {
+                                        "_sort": sort_order,
+                                        "Type": m["type"],
+                                        "Text": m["text"][:30] + "..."
+                                        if len(m["text"]) > 30
+                                        else m["text"],
+                                        "Before LLM": f"{orig_conf:.0%}",
+                                        "After LLM": "✗" if is_rejected else f"{new_conf:.0%}",
+                                        "Change": change,
+                                        "Status": status,
+                                        "Reason": m.get("llm_reason", ""),
+                                    }
+                                )
+
+                        if comparison_data:
+                            st.markdown("**LLM Changed These Detections:**")
+
+                            # Sort: rejected first, then validated
+                            comparison_data.sort(key=lambda x: x["_sort"])
+
+                            # Remove sort column before display
+                            for item in comparison_data:
+                                del item["_sort"]
+
+                            # Display as styled dataframe
+                            df = pd.DataFrame(comparison_data)
+                            st.dataframe(df, use_container_width=True, hide_index=True)
+
+                        # Summary stats (always show)
+                        rejected_count = sum(1 for m in matches if m.get("llm_rejected", False))
+                        validated_count = sum(
+                            1
+                            for m in matches
+                            if m.get("llm_validated", False)
+                            and not m.get("llm_rejected", False)
+                            and "auto-approved" not in m.get("llm_reason", "").lower()
+                        )
+                        skipped_count = sum(
+                            1 for m in matches if "auto-approved" in m.get("llm_reason", "").lower()
+                        )
+
+                        col1, col2, col3 = st.columns(3)
+                        with col1:
+                            st.metric("✓ Validated", validated_count, help="LLM confirmed as PII")
+                        with col2:
+                            st.metric(
+                                "❌ Rejected", rejected_count, help="LLM caught false positives"
+                            )
+                        with col3:
+                            st.metric(
+                                "⏭ Skipped",
+                                skipped_count,
+                                help="High confidence, auto-approved",
+                            )
+
+                        st.divider()
+
+            # Split matches by confidence (excluding rejected matches)
+            high_conf_matches = [
+                (i, m)
+                for i, m in enumerate(matches)
+                if m["confidence"] >= confidence_threshold and not m.get("llm_rejected", False)
+            ]
+            review_matches = [
+                (i, m)
+                for i, m in enumerate(matches)
+                if m["confidence"] < confidence_threshold and not m.get("llm_rejected", False)
+            ]
 
             # Needs review matches FIRST (user must decide)
             pending_decisions = 0
@@ -455,7 +585,9 @@ def main():
                         # User must explicitly choose: Is PII or Not PII
                         current_decision = st.session_state.match_selections.get(idx, None)
                         # Map None -> None, True -> 0, False -> 1
-                        current_index = None if current_decision is None else (0 if current_decision else 1)
+                        current_index = (
+                            None if current_decision is None else (0 if current_decision else 1)
+                        )
                         decision_str = st.radio(
                             "Decision",
                             options=["✓ Is PII", "✗ Not PII"],
@@ -472,7 +604,10 @@ def main():
                             st.session_state.match_selections[idx] = decision_str == "✓ Is PII"
                     with col2:
                         color = PII_COLORS.get(match["type"], "#888")
-                        st.markdown(f"<span style='color:{color};font-weight:bold;'>{match['type']}</span>", unsafe_allow_html=True)
+                        st.markdown(
+                            f"<span style='color:{color};font-weight:bold;'>{match['type']}</span>",
+                            unsafe_allow_html=True,
+                        )
                     with col3:
                         st.code(match["text"], language=None)
                     with col4:
@@ -480,14 +615,26 @@ def main():
 
             # High confidence matches (auto-approved, display only)
             if high_conf_matches:
-                with st.expander(f"✅ High Confidence (Auto-Approved) — {len(high_conf_matches)} items", expanded=False):
+                with st.expander(
+                    f"✅ High Confidence (Auto-Approved) — {len(high_conf_matches)} items",
+                    expanded=False,
+                ):
                     for idx, match in high_conf_matches:
                         col1, col2, col3, col4 = st.columns([0.5, 1.5, 3, 1])
                         with col1:
-                            st.checkbox("Include", value=True, disabled=True, key=f"high_{idx}", label_visibility="collapsed")
+                            st.checkbox(
+                                "Include",
+                                value=True,
+                                disabled=True,
+                                key=f"high_{idx}",
+                                label_visibility="collapsed",
+                            )
                         with col2:
                             color = PII_COLORS.get(match["type"], "#888")
-                            st.markdown(f"<span style='color:{color};font-weight:bold;'>{match['type']}</span>", unsafe_allow_html=True)
+                            st.markdown(
+                                f"<span style='color:{color};font-weight:bold;'>{match['type']}</span>",
+                                unsafe_allow_html=True,
+                            )
                         with col3:
                             st.code(match["text"], language=None)
                         with col4:
@@ -523,7 +670,11 @@ def main():
                 # Disable if pending decisions or no matches selected
                 has_pending = pending_decisions > 0
                 button_disabled = has_pending or selected_count == 0
-                button_label = f"⏳ {pending_decisions} pending decisions" if has_pending else f"✓ Apply Anonymization ({selected_count} matches)"
+                button_label = (
+                    f"⏳ {pending_decisions} pending decisions"
+                    if has_pending
+                    else f"✓ Apply Anonymization ({selected_count} matches)"
+                )
 
                 if st.button(
                     button_label,
@@ -537,11 +688,13 @@ def main():
                         decision = st.session_state.match_selections.get(i, None)
                         # Include high confidence (auto-approved) and user-confirmed PII
                         if match["confidence"] >= confidence_threshold or decision is True:
-                            approved_matches.append({
-                                "type": match["type"],
-                                "start": match["start"],
-                                "end": match["end"],
-                            })
+                            approved_matches.append(
+                                {
+                                    "type": match["type"],
+                                    "start": match["start"],
+                                    "end": match["end"],
+                                }
+                            )
 
                     # Call anonymize API
                     payload = {
@@ -561,7 +714,10 @@ def main():
     # ============== STEP 3: RESULT ==============
     elif st.session_state.workflow_step == 3:
         # Scroll to top when entering this step
-        st.markdown("<script>window.parent.document.querySelector('section.main').scrollTo(0, 0);</script>", unsafe_allow_html=True)
+        st.markdown(
+            "<script>window.parent.document.querySelector('section.main').scrollTo(0, 0);</script>",
+            unsafe_allow_html=True,
+        )
 
         # Header with New button inline
         header_col, btn_col = st.columns([6, 1])
@@ -584,7 +740,9 @@ def main():
             st.markdown("#### Original Text")
             st.code(anonymize_response.get("original_text", ""), language=None)
         with col2:
-            st.markdown(f"#### Anonymized ({st.session_state.get('selected_strategy', 'redaction')})")
+            st.markdown(
+                f"#### Anonymized ({st.session_state.get('selected_strategy', 'redaction')})"
+            )
             st.code(anonymize_response.get("processed_text", ""), language=None)
 
         st.divider()
@@ -622,18 +780,22 @@ def main():
         # Calculate HITL metrics
         auto_approved = sum(1 for m in matches if m["confidence"] >= threshold)
         user_confirmed = sum(
-            1 for i, m in enumerate(matches)
+            1
+            for i, m in enumerate(matches)
             if m["confidence"] < threshold and match_selections.get(i) is True
         )
         user_rejected = sum(
-            1 for i, m in enumerate(matches)
+            1
+            for i, m in enumerate(matches)
             if m["confidence"] < threshold and match_selections.get(i) is False
         )
         human_correction_rate = (user_rejected / total_detected * 100) if total_detected > 0 else 0
 
         # Detection method counts
         rule_based_detectors = {"email", "phone", "iban", "credit_card", "ip_address", "german_id"}
-        rule_based_count = sum(1 for m in matches if m.get("detector", "").lower() in rule_based_detectors)
+        rule_based_count = sum(
+            1 for m in matches if m.get("detector", "").lower() in rule_based_detectors
+        )
         ml_count = sum(1 for m in matches if m.get("detector", "").lower() == "presidio")
 
         # Row 1: Gauge + Donut side by side
@@ -641,63 +803,86 @@ def main():
 
         with chart_col1:
             # Human Correction Rate Gauge
-            fig_gauge = go.Figure(go.Indicator(
-                mode="gauge+number",
-                value=human_correction_rate,
-                number={"suffix": "%", "font": {"size": 32, "color": "#e0e0e0"}},
-                title={"text": "Human Correction Rate", "font": {"size": 14, "color": "#888"}},
-                gauge={
-                    "axis": {"range": [0, 100], "tickcolor": "#888", "tickfont": {"color": "#888"}},
-                    "bar": {"color": "#00b4d8"},
-                    "bgcolor": "rgba(0,0,0,0)",
-                    "steps": [
-                        {"range": [0, 10], "color": "#2ecc71"},
-                        {"range": [10, 30], "color": "#f39c12"},
-                        {"range": [30, 100], "color": "#e74c3c"},
-                    ],
-                }
-            ))
+            fig_gauge = go.Figure(
+                go.Indicator(
+                    mode="gauge+number",
+                    value=human_correction_rate,
+                    number={"suffix": "%", "font": {"size": 32, "color": "#e0e0e0"}},
+                    title={"text": "Human Correction Rate", "font": {"size": 14, "color": "#888"}},
+                    gauge={
+                        "axis": {
+                            "range": [0, 100],
+                            "tickcolor": "#888",
+                            "tickfont": {"color": "#888"},
+                        },
+                        "bar": {"color": "#00b4d8"},
+                        "bgcolor": "rgba(0,0,0,0)",
+                        "steps": [
+                            {"range": [0, 10], "color": "#2ecc71"},
+                            {"range": [10, 30], "color": "#f39c12"},
+                            {"range": [30, 100], "color": "#e74c3c"},
+                        ],
+                    },
+                )
+            )
             fig_gauge.update_layout(
                 paper_bgcolor="rgba(0,0,0,0)",
                 font={"family": "Inter, sans-serif"},
                 height=220,
-                margin={"l": 20, "r": 20, "t": 50, "b": 20}
+                margin={"l": 20, "r": 20, "t": 50, "b": 20},
             )
             st.plotly_chart(fig_gauge, use_container_width=True, config={"displayModeBar": False})
 
         with chart_col2:
             # Detection Methods Donut
             if rule_based_count + ml_count > 0:
-                fig_donut = go.Figure(go.Pie(
-                    labels=["Rule-based", "ML/NER"],
-                    values=[rule_based_count, ml_count],
-                    hole=0.6,
-                    marker={"colors": ["#00b4d8", "#7209b7"], "line": {"color": "#1a1a2e", "width": 2}},
-                    textinfo="percent+label",
-                    textposition="outside",
-                    textfont={"size": 11, "color": "#e0e0e0"},
-                ))
+                fig_donut = go.Figure(
+                    go.Pie(
+                        labels=["Rule-based", "ML/NER"],
+                        values=[rule_based_count, ml_count],
+                        hole=0.6,
+                        marker={
+                            "colors": ["#00b4d8", "#7209b7"],
+                            "line": {"color": "#1a1a2e", "width": 2},
+                        },
+                        textinfo="percent+label",
+                        textposition="outside",
+                        textfont={"size": 11, "color": "#e0e0e0"},
+                    )
+                )
                 fig_donut.update_layout(
-                    title={"text": "Detection Methods", "font": {"size": 14, "color": "#888"}, "x": 0.5},
+                    title={
+                        "text": "Detection Methods",
+                        "font": {"size": 14, "color": "#888"},
+                        "x": 0.5,
+                    },
                     paper_bgcolor="rgba(0,0,0,0)",
                     showlegend=False,
                     height=220,
                     margin={"l": 20, "r": 20, "t": 50, "b": 20},
-                    annotations=[{
-                        "text": f"{rule_based_count + ml_count}",
-                        "x": 0.5, "y": 0.5,
-                        "font": {"size": 24, "color": "#e0e0e0"},
-                        "showarrow": False
-                    }]
+                    annotations=[
+                        {
+                            "text": f"{rule_based_count + ml_count}",
+                            "x": 0.5,
+                            "y": 0.5,
+                            "font": {"size": 24, "color": "#e0e0e0"},
+                            "showarrow": False,
+                        }
+                    ],
                 )
-                st.plotly_chart(fig_donut, use_container_width=True, config={"displayModeBar": False})
+                st.plotly_chart(
+                    fig_donut, use_container_width=True, config={"displayModeBar": False}
+                )
             else:
                 st.info("No detection method data")
 
         st.divider()
 
         # ---- SECTION 4: HITL Summary Metrics ----
-        st.markdown(f"<div style='color: #888; font-size: 12px;'>Confidence Threshold: {threshold:.0%}</div>", unsafe_allow_html=True)
+        st.markdown(
+            f"<div style='color: #888; font-size: 12px;'>Confidence Threshold: {threshold:.0%}</div>",
+            unsafe_allow_html=True,
+        )
         metric_col1, metric_col2, metric_col3 = st.columns(3)
         with metric_col1:
             st.metric("Auto-approved", auto_approved, help="High confidence detections")
@@ -714,7 +899,8 @@ def main():
 
             # Get approved matches only (high confidence + user confirmed)
             approved_matches = [
-                m for i, m in enumerate(matches)
+                m
+                for i, m in enumerate(matches)
                 if m["confidence"] >= threshold or match_selections.get(i) is True
             ]
 
@@ -756,19 +942,34 @@ def main():
                 with st.expander("Breakdown Details", expanded=True):
                     # False Positives (wrong detections) - Yellow/Orange
                     if metrics["fp_details"]:
-                        st.markdown("<span style='color: #FFC107; font-weight: bold;'>False Positives (Wrong Detections):</span>", unsafe_allow_html=True)
+                        st.markdown(
+                            "<span style='color: #FFC107; font-weight: bold;'>False Positives (Wrong Detections):</span>",
+                            unsafe_allow_html=True,
+                        )
                         for pii_type, text in metrics["fp_details"]:
-                            st.markdown(f"<span style='color: #FFC107;'>- {pii_type}: `{text}`</span>", unsafe_allow_html=True)
+                            st.markdown(
+                                f"<span style='color: #FFC107;'>- {pii_type}: `{text}`</span>",
+                                unsafe_allow_html=True,
+                            )
 
                     # False Negatives (missed) - Red
                     if metrics["fn_details"]:
-                        st.markdown("<span style='color: #F44336; font-weight: bold;'>False Negatives (Missed):</span>", unsafe_allow_html=True)
+                        st.markdown(
+                            "<span style='color: #F44336; font-weight: bold;'>False Negatives (Missed):</span>",
+                            unsafe_allow_html=True,
+                        )
                         for pii_type, text in metrics["fn_details"]:
-                            st.markdown(f"<span style='color: #F44336;'>- {pii_type}: `{text}`</span>", unsafe_allow_html=True)
+                            st.markdown(
+                                f"<span style='color: #F44336;'>- {pii_type}: `{text}`</span>",
+                                unsafe_allow_html=True,
+                            )
 
                     # Show success message if no errors
                     if not metrics["fp_details"] and not metrics["fn_details"]:
-                        st.markdown("<span style='color: #4CAF50;'>✓ All detections correct!</span>", unsafe_allow_html=True)
+                        st.markdown(
+                            "<span style='color: #4CAF50;'>✓ All detections correct!</span>",
+                            unsafe_allow_html=True,
+                        )
 
         # ---- SECTION 5: Detection Details with Explainability ----
         with st.expander("📋 Detection Details", expanded=True):
@@ -827,14 +1028,16 @@ def main():
                     detector = m.get("detector", "unknown").lower()
                     reason = DETECTION_REASONS.get(detector, "Pattern matched")
 
-                    table_data.append({
-                        "Type": m["type"],
-                        "Detected Text": m["text"],
-                        "Confidence": conf_display,
-                        "Detector": m.get("detector", "unknown"),
-                        "Reason": reason,
-                        "Status": status,
-                    })
+                    table_data.append(
+                        {
+                            "Type": m["type"],
+                            "Detected Text": m["text"],
+                            "Confidence": conf_display,
+                            "Detector": m.get("detector", "unknown"),
+                            "Reason": reason,
+                            "Status": status,
+                        }
+                    )
 
                 df = pd.DataFrame(table_data)
                 st.dataframe(df, use_container_width=True, hide_index=True)

@@ -60,7 +60,7 @@ class TestLLMValidator:
         """Test availability check without API key."""
         validator = LLMValidator(api_key=None)
         # Without anthropic package or API key, should not be available
-        assert not validator.is_available()
+        assert not validator.is_available
 
 
 class TestSentenceExtraction:
@@ -129,8 +129,22 @@ class TestGroupBySentence:
         """Test grouping matches in a single sentence."""
         text = "Hans Müller and Anna Schmidt work together."
         matches = [
-            PIIMatch(type=PIIType.NAME, text="Hans Müller", start=0, end=11, confidence=0.8, detector="presidio"),
-            PIIMatch(type=PIIType.NAME, text="Anna Schmidt", start=16, end=28, confidence=0.75, detector="presidio"),
+            PIIMatch(
+                type=PIIType.NAME,
+                text="Hans Müller",
+                start=0,
+                end=11,
+                confidence=0.8,
+                detector="presidio",
+            ),
+            PIIMatch(
+                type=PIIType.NAME,
+                text="Anna Schmidt",
+                start=16,
+                end=28,
+                confidence=0.75,
+                detector="presidio",
+            ),
         ]
         groups = validator._group_by_sentence(text, matches)
         assert len(groups) == 1
@@ -140,8 +154,22 @@ class TestGroupBySentence:
         """Test grouping matches across sentences."""
         text = "Hans Müller is here. Anna Schmidt is there."
         matches = [
-            PIIMatch(type=PIIType.NAME, text="Hans Müller", start=0, end=11, confidence=0.8, detector="presidio"),
-            PIIMatch(type=PIIType.NAME, text="Anna Schmidt", start=21, end=33, confidence=0.75, detector="presidio"),
+            PIIMatch(
+                type=PIIType.NAME,
+                text="Hans Müller",
+                start=0,
+                end=11,
+                confidence=0.8,
+                detector="presidio",
+            ),
+            PIIMatch(
+                type=PIIType.NAME,
+                text="Anna Schmidt",
+                start=21,
+                end=33,
+                confidence=0.75,
+                detector="presidio",
+            ),
         ]
         groups = validator._group_by_sentence(text, matches)
         assert len(groups) == 2  # Two separate sentences
@@ -160,8 +188,22 @@ class TestValidateLowConfidence:
         """Test that high-confidence matches are auto-approved."""
         validator = LLMValidator(api_key=None)
         matches = [
-            PIIMatch(type=PIIType.EMAIL, text="test@example.com", start=0, end=16, confidence=1.0, detector="email"),
-            PIIMatch(type=PIIType.NAME, text="Hans", start=20, end=24, confidence=0.95, detector="presidio"),
+            PIIMatch(
+                type=PIIType.EMAIL,
+                text="test@example.com",
+                start=0,
+                end=16,
+                confidence=1.0,
+                detector="email",
+            ),
+            PIIMatch(
+                type=PIIType.NAME,
+                text="Hans",
+                start=20,
+                end=24,
+                confidence=0.95,
+                detector="presidio",
+            ),
         ]
         results = validator.validate_low_confidence(
             text="test@example.com and Hans",
@@ -178,7 +220,9 @@ class TestValidateLowConfidence:
         """Test low-confidence matches when LLM is unavailable."""
         validator = LLMValidator(api_key=None)
         matches = [
-            PIIMatch(type=PIIType.NAME, text="Hans", start=0, end=4, confidence=0.7, detector="presidio"),
+            PIIMatch(
+                type=PIIType.NAME, text="Hans", start=0, end=4, confidence=0.7, detector="presidio"
+            ),
         ]
         results = validator.validate_low_confidence(
             text="Hans is here",
@@ -194,8 +238,22 @@ class TestValidateLowConfidence:
         """Test that only low-confidence matches are sent to LLM."""
         validator = LLMValidator(api_key=None)
         matches = [
-            PIIMatch(type=PIIType.EMAIL, text="test@example.com", start=0, end=16, confidence=1.0, detector="email"),
-            PIIMatch(type=PIIType.NAME, text="Hans", start=20, end=24, confidence=0.7, detector="presidio"),
+            PIIMatch(
+                type=PIIType.EMAIL,
+                text="test@example.com",
+                start=0,
+                end=16,
+                confidence=1.0,
+                detector="email",
+            ),
+            PIIMatch(
+                type=PIIType.NAME,
+                text="Hans",
+                start=20,
+                end=24,
+                confidence=0.7,
+                detector="presidio",
+            ),
         ]
         results = validator.validate_low_confidence(
             text="test@example.com and Hans",
@@ -221,8 +279,22 @@ class TestValidateLowConfidence:
         validator._client = mock_client
 
         matches = [
-            PIIMatch(type=PIIType.NAME, text="Hans Müller", start=0, end=11, confidence=0.75, detector="presidio"),
-            PIIMatch(type=PIIType.NAME, text="SAP", start=25, end=28, confidence=0.65, detector="presidio"),
+            PIIMatch(
+                type=PIIType.NAME,
+                text="Hans Müller",
+                start=0,
+                end=11,
+                confidence=0.75,
+                detector="presidio",
+            ),
+            PIIMatch(
+                type=PIIType.NAME,
+                text="SAP",
+                start=25,
+                end=28,
+                confidence=0.65,
+                detector="presidio",
+            ),
         ]
 
         # Mock API response
@@ -267,9 +339,13 @@ class TestParseSentenceResponse:
     def test_parse_valid_json(self, validator: LLMValidator) -> None:
         """Test parsing valid JSON response."""
         matches = [
-            PIIMatch(type=PIIType.NAME, text="Hans", start=0, end=4, confidence=0.8, detector="presidio"),
+            PIIMatch(
+                type=PIIType.NAME, text="Hans", start=0, end=4, confidence=0.8, detector="presidio"
+            ),
         ]
-        response = '[{"text": "Hans", "is_pii": true, "confidence": 0.95, "reason": "Personal name"}]'
+        response = (
+            '[{"text": "Hans", "is_pii": true, "confidence": 0.95, "reason": "Personal name"}]'
+        )
         results = validator._parse_sentence_response(response, matches)
 
         assert len(results) == 1
@@ -280,11 +356,13 @@ class TestParseSentenceResponse:
     def test_parse_with_markdown(self, validator: LLMValidator) -> None:
         """Test parsing response with markdown code blocks."""
         matches = [
-            PIIMatch(type=PIIType.NAME, text="Hans", start=0, end=4, confidence=0.8, detector="presidio"),
+            PIIMatch(
+                type=PIIType.NAME, text="Hans", start=0, end=4, confidence=0.8, detector="presidio"
+            ),
         ]
-        response = '''```json
+        response = """```json
 [{"text": "Hans", "is_pii": true, "confidence": 0.9, "reason": "Name"}]
-```'''
+```"""
         results = validator._parse_sentence_response(response, matches)
 
         assert len(results) == 1
@@ -294,8 +372,17 @@ class TestParseSentenceResponse:
     def test_parse_missing_match(self, validator: LLMValidator) -> None:
         """Test parsing when a match is missing from response."""
         matches = [
-            PIIMatch(type=PIIType.NAME, text="Hans", start=0, end=4, confidence=0.8, detector="presidio"),
-            PIIMatch(type=PIIType.NAME, text="Anna", start=10, end=14, confidence=0.75, detector="presidio"),
+            PIIMatch(
+                type=PIIType.NAME, text="Hans", start=0, end=4, confidence=0.8, detector="presidio"
+            ),
+            PIIMatch(
+                type=PIIType.NAME,
+                text="Anna",
+                start=10,
+                end=14,
+                confidence=0.75,
+                detector="presidio",
+            ),
         ]
         # Response only contains Hans, missing Anna
         response = '[{"text": "Hans", "is_pii": true, "confidence": 0.95, "reason": "Name"}]'
@@ -310,7 +397,9 @@ class TestParseSentenceResponse:
     def test_parse_invalid_json(self, validator: LLMValidator) -> None:
         """Test parsing invalid JSON response."""
         matches = [
-            PIIMatch(type=PIIType.NAME, text="Hans", start=0, end=4, confidence=0.8, detector="presidio"),
+            PIIMatch(
+                type=PIIType.NAME, text="Hans", start=0, end=4, confidence=0.8, detector="presidio"
+            ),
         ]
         response = "This is not valid JSON"
         results = validator._parse_sentence_response(response, matches)
@@ -323,7 +412,9 @@ class TestParseSentenceResponse:
     def test_parse_case_insensitive_matching(self, validator: LLMValidator) -> None:
         """Test that match text comparison is case-insensitive."""
         matches = [
-            PIIMatch(type=PIIType.NAME, text="HANS", start=0, end=4, confidence=0.8, detector="presidio"),
+            PIIMatch(
+                type=PIIType.NAME, text="HANS", start=0, end=4, confidence=0.8, detector="presidio"
+            ),
         ]
         response = '[{"text": "hans", "is_pii": true, "confidence": 0.9, "reason": "Name"}]'
         results = validator._parse_sentence_response(response, matches)
