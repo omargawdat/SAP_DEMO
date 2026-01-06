@@ -155,9 +155,46 @@ docker compose up --build
 
 | Category | Technologies |
 |----------|--------------|
-| **Core** | Python 3.13, FastAPI, Pydantic v2 |
+| **Core** | Python 3.13, FastAPI, Pydantic v2, uv |
 | **ML** | Presidio, spaCy (German model) |
 | **AI** | Claude API (Anthropic) |
 | **Deploy** | Docker, AWS App Runner, AWS ECR |
 | **Secrets** | AWS Secrets Manager, GitHub Secrets |
 | **Quality** | pytest, ruff, pre-commit, GitHub Actions |
+
+### Why These Technologies?
+
+**Core Stack**
+
+| Technology | Why Used |
+|------------|----------|
+| Python 3.13 | Latest features, type hints, performance |
+| FastAPI | Async, auto-docs (Swagger), Pydantic integration |
+| Pydantic v2 | Data validation, 5x faster than v1 |
+| uv | Fast package manager (10-100x faster than pip) |
+
+**ML/NLP Stack**
+
+| Technology | Why Used |
+|------------|----------|
+| Presidio | Microsoft's enterprise PII detection framework |
+| spaCy | German NER model (`de_core_news_md`, 46MB) |
+| Claude API | LLM validation for ambiguous low-confidence cases |
+
+**DevOps & Quality**
+
+| Technology | Why Used |
+|------------|----------|
+| Docker | Multi-stage builds, consistent environments |
+| GitHub Actions | CI/CD pipeline to AWS ECR |
+| pytest | Testing framework with coverage |
+| Ruff | Single tool for linting + formatting (replaces flake8, black, isort) |
+| pre-commit | Automated quality checks (Gitleaks, Bandit, Ruff) |
+
+**Cloud Infrastructure**
+
+| Technology | Why Used |
+|------------|----------|
+| AWS App Runner | Simple container deployment from ECR |
+| AWS ECR | Private container registry |
+| AWS Secrets Manager | Secure API key storage (ANTHROPIC_API_KEY) |
